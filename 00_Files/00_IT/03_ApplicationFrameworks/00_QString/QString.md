@@ -85,7 +85,7 @@ private:
 
 ```
 [QString] : sizeof(4)
-	Data *d; ==> [QStringData*] ==> [QTypedArrayData<ushort>*] ==> [template <class T> struct QTypedArrayData : QArrayData]
+    Data *d; ==> [QStringData*] ==> [QTypedArrayData<ushort>*] ==> [template <class T> struct QTypedArrayData : QArrayData]
         [QTypedArrayData<ushort>*]
             [QArrayData*]
                 QtPrivate::RefCount ref;    //引用计数(atomic operation)
