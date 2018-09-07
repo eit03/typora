@@ -1,10 +1,9 @@
 ***
-`Version:` 5.11
+`Version:` 5.11.1
 `Declaration:`
 `Defination:`
 `Reference:`
-`Keyword:` [QString]
-
+`Keyword:` \[QString\]
 ***
 [TOC]
 ***
@@ -41,6 +40,7 @@ public:
     QString(int size, QChar c);
     inline QString(QLatin1String latin1);
     inline QString(const QString &) Q_DECL_NOTHROW;
+    
 #ifdef Q_COMPILER_RVALUE_REFS
     inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) { other.d = Data::sharedNull(); }
 #endif
@@ -84,7 +84,7 @@ private:
 ## `Memory Model`
 
 ```
-[QString] : sizeof(4)
+[QString]
     Data *d; ==> [QStringData*] ==> [QTypedArrayData<ushort>*] ==> [template <class T> struct QTypedArrayData : QArrayData]
         [QTypedArrayData<ushort>*]
             [QArrayData*]
@@ -92,7 +92,7 @@ private:
                 int size;                   //元素个数(这里是字符个数)
                 uint alloc : 31;            //最大元素个数
                 uint capacityReserved : 1;  //
-                qptrdiff offset;            //数组指针
+                qptrdiff offset;            //数组指针 (this + offset)
 ```
 
 
@@ -100,7 +100,9 @@ private:
 
 
 # `Public Types`
+
 ###### `class Null`
+
 ###### `typedef ConstIterator`
 ###### `typedef Iterator`
 ###### `enum NormalizationForm { NormalizationForm_D, NormalizationForm_C, NormalizationForm_KD, NormalizationForm_KC }`
@@ -132,6 +134,7 @@ private:
 ###### ` QString(const char* str)`
 ###### ` QString(const QByteArray &ba)`
 ###### ` ~QString()`
+
 ###### `QString & append(const QString &str)`
 ###### `QString & append(const QChar* str, int len)`
 ###### `QString & append(QChar ch)`
@@ -147,6 +150,7 @@ private:
 ###### `QString arg(uint a, int fieldWidth = 0, int base = 10, QChar fillChar = QLatin1Char(' ')) const`
 ###### `QString arg(short a, int fieldWidth = 0, int base = 10, QChar fillChar = QLatin1Char(' ')) const`
 ###### `QString arg(ushort a, int fieldWidth = 0, int base = 10, QChar fillChar = QLatin1Char(' ')) const`
+
 ###### `QString arg(double a, int fieldWidth = 0, char format = 'g', int precision = -1, QChar fillChar = QLatin1Char(' ')) const`
 ###### `QString arg(char a, int fieldWidth = 0, QChar fillChar = QLatin1Char(' ')) const`
 ###### `QString arg(QChar a, int fieldWidth = 0, QChar fillChar = QLatin1Char(' ')) const`
@@ -412,6 +416,7 @@ private:
 ###### `int localeAwareCompare(const QString &s1, const QString &s2)`
 ###### `int localeAwareCompare(const QString &s1, const QStringRef &s2)`
 ###### `QString number(long n, int base = 10)`
+
 ###### `QString number(uint n, int base = 10)`
 ###### `QString number(int n, int base = 10)`
 ###### `QString number(ulong n, int base = 10)`
@@ -423,12 +428,14 @@ private:
 
 
 # `Related Non-Members`
+
 ###### `bool operator!=(const QString &s1, const QString &s2)`
 ###### `bool operator!=(const char* s1, const QString &s2)`
 ###### `const QString operator+(const QString &s1, const QString &s2)`
 ###### `const QString operator+(const QString &s1, const char* s2)`
 ###### `const QString operator+(const char* s1, const QString &s2)`
 ###### `const QString operator+(const QString &s, char ch)`
+
 ###### `const QString operator+(char ch, const QString &s)`
 ###### `bool operator<(const QString &s1, const QString &s2)`
 ###### `bool operator<(const char* s1, const QString &s2)`
@@ -447,7 +454,9 @@ private:
 
 # `Macros`
 ###### ` QStringLiteral(str)`
+
 ###### ` QT_NO_CAST_FROM_ASCII`
+
 ###### ` QT_NO_CAST_TO_ASCII`
 ###### ` QT_RESTRICTED_CAST_FROM_ASCII`
 
@@ -455,18 +464,31 @@ private:
 
 # `说人话`
 
+1. 一个非派生的类
+2. 一个没有虚函数的类
+3. 只有一个成员 *private: Date\* d*
+4. 所以 **8 == sizeof(QString)**
+5. 管理一个数组数据,
+          [QTypedArrayData\<ushort\>\][QArrayData\*]
+                  QtPrivate::RefCount ref;    //引用计数(atomic operation)
+                  int size;                   //元素个数(这里是字符个数)
+                  uint alloc : 31;            //最大元素个数
+                  uint capacityReserved : 1;  //
+                  qptrdiff offset;            //数组指针 (this + offset)
+6. **24 == sizeof(QArryDate)**            **8 == alignof(QArrayData)**
+7. 这个数据的结构是数组属性与使用情况的说明: **引用计数** **贮存元素个数** **最大元素个数** **数组指针**
+8. 真正的数组数据是 *offset* 指向的.
+9. 牛逼没意思,放码过来.
+
+
 `QString::fromUtf8()`
 
 ```
 #include <QString>
-#include <QTextCodec>
-
 
 int main()
 {
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
-
-    const unsigned char szUtf8[] = {0xE8, 0xBF, 0x99, 0xE6, 0x98, 0xAF, 0xE6, 0x88, 0x91};
+    const unsigned char szUtf8[] = {0xE8, 0xBF, 0x99, 0xE6, 0x98, 0xAF, 0xE6, 0x88, 0x91};	//这是我的utf8码
     QString str = QString::fromUtf8(reinterpret_cast<const char*>(szUtf8));
     return 0;
 }
@@ -612,4 +634,169 @@ QArrayData *QArrayData::allocate(size_t objectSize, size_t alignment, size_t cap
 	return header;
 ```
 
+`QString str = "这是我";`
+
+```
+#include <QString>
+
+int main()
+{
+    QString str = "这是我";
+    return 0;
+}
+```
+
+```
+inline QT_ASCII_CAST_WARN QString(const char *ch) 
+: d(fromAscii_helper(ch, ch ? int(strlen(ch)) : -1))
+{}
+```
+
+```
+00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+
+fd fd fd fd 01 00 00 00 06 00 00 00 07 00 00 00
+cd cd cd cd 18 00 00 00 00 00 00 00 fd ff fd ff
+fd ff fd ff fd ff fd ff 00 00 fd fd fd fd
+
+==>
+01 00 00 00 06 00 00 00 07 00 00 00 cd cd cd cd
+18 00 00 00 00 00 00 00 fd ff fd ff fd ff fd ff 
+fd ff fd ff 00 00
+
+==>
+QtPrivate::RefCount ref;    ==> ref = 1;
+int size;                   ==> size = 6;
+uint alloc : 31;            ==> alloc = 7;
+uint capacityReserved : 1;  ==> capacityReserved = 0;
+qptrdiff offset;            ==> offset = 18;
+
+==>
+ushort[7] = {0xfffd, 0xfffd, 0xfffd, 0xfffd ,0xfffd ,0xfffd ,0x0000};
+
+==>
+乱码.因为我的环境是GB2312编码,它的解码用fromAscii_helper.
+可以看下解码器:
+compare_helper
+localeAwareCompare_helper
+toLower_helper
+toUpper_helper
+toCaseFolded_helper
+trimmed_helper
+
+simplified_helper
+fromLatin1_helper
+fromAscii_helper
+fromUtf8_helper
+fromLocal8Bit_helper
+
+toLatin1_helper
+toUtf8_helper
+toLocal8Bit_helper
+toUcs4_helper
+toIntegral_helper
+replace_helper
+```
+
+`QString::fromLocal8Bit( "这是我" )`
+
+```
+#include <QString>
+
+int main()
+{
+    QString str = QString::fromLocal8Bit( "这是我" );
+    return 0;
+}
+```
+
+```
+static inline QString fromLocal8Bit(const char *str, int size = -1)
+{
+    return fromLocal8Bit_helper(str, (str && size == -1) ? int(strlen(str)) : size);
+}
+```
+
+```
+QString QString::fromLocal8Bit_helper(const char *str, int size)
+{
+    if (!str)
+        return QString();
+    if (size == 0 || (!*str && size < 0)) {
+        QStringDataPtr empty = { Data::allocate(0) };
+        return QString(empty);
+    }
+#if !defined(QT_NO_TEXTCODEC)
+    if (size < 0)
+        size = qstrlen(str);
+    QTextCodec *codec = QTextCodec::codecForLocale();
+    if (codec)
+        return codec->toUnicode(str, size);
+#endif // !QT_NO_TEXTCODEC
+    return fromLatin1(str, size);
+}
+
+==>
+QTextCodec *codec = QTextCodec::codecForLocale();
+if (codec)
+    return codec->toUnicode(str, size);
+    
+==============================================
+/*!
+    \threadsafe
+    Returns a pointer to the codec most suitable for this locale.
+
+    On Windows, the codec will be based on a system locale. On Unix
+    systems, the codec will might fall back to using the \e iconv
+    library if no builtin codec for the locale can be found.
+
+    Note that in these cases the codec's name will be "System".
+*/
+QTextCodec* QTextCodec::codecForLocale()
+{
+    QCoreGlobalData *globalData = QCoreGlobalData::instance();
+    if (!globalData)
+        return 0;
+
+    QTextCodec *codec = globalData->codecForLocale.loadAcquire();
+    if (!codec) {
+#if QT_CONFIG(icu)
+        textCodecsMutex()->lock();
+        codec = QIcuCodec::defaultCodecUnlocked();
+        textCodecsMutex()->unlock();
+#else
+        // setupLocaleMapper locks as necessary
+        codec = setupLocaleMapper();
+#endif
+    }
+
+    return codec;
+}
+
+后面的转码代码:
+while (!(len=MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED|MB_ERR_INVALID_CHARS,
+            mb, mblen, wc.data(), wc.length()))) {
+    int r = GetLastError();
+    if (r == ERROR_INSUFFICIENT_BUFFER) {
+            const int wclen = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED,
+                                mb, mblen, 0, 0);
+            wc.resize(wclen);
+    } else if (r == ERROR_NO_UNICODE_TRANSLATION) {
+        //find the last non NULL character
+        while (mblen > 1  && !(mb[mblen-1]))
+            mblen--;
+        //check whether,  we hit an invalid character in the middle
+        if ((mblen <= 1) || (remainingChars && state_data))
+            return convertToUnicodeCharByChar(chars, length, state);
+        //Remove the last character and try again...
+        state_data = mb[mblen-1];
+        remainingChars = 1;
+        mblen--;
+    } else {
+        // Fail.
+        qWarning("MultiByteToWideChar: Cannot convert multibyte text");
+        break;
+    }
+}
+```
 
