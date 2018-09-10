@@ -26,30 +26,45 @@ ELF文件参与程序的连接(建立一个程序)和程序的执行(运行一�
 
 # `4. 格式分析`
 
-## `4.1 一个简单的程序`
-
-```
-//HelloWorld.c
-
-#include <stdio.h>
-
-
-int main()
-{
-	printf("Hello World!\n");
-	return 0;
-}
-```
-
-```
-gcc HelloWorld.c -o HelloWorld.exe
-```
-
-```
-./HelloWorld.exe
-```
-
 ## `4.2 ELF header (Ehdr)`  
+
+
+
+```
+/* Type for a 16-bit quantity.  */
+typedef uint16_t Elf32_Half;
+typedef uint16_t Elf64_Half;
+
+/* Types for signed and unsigned 32-bit quantities.  */
+typedef uint32_t Elf32_Word;
+typedef	int32_t  Elf32_Sword;
+typedef uint32_t Elf64_Word;
+typedef	int32_t  Elf64_Sword;
+
+/* Types for signed and unsigned 64-bit quantities.  */
+typedef uint64_t Elf32_Xword;
+typedef	int64_t  Elf32_Sxword;
+typedef uint64_t Elf64_Xword;
+typedef	int64_t  Elf64_Sxword;
+
+/* Type of addresses.  */
+typedef uint32_t Elf32_Addr;
+typedef uint64_t Elf64_Addr;
+
+/* Type of file offsets.  */
+typedef uint32_t Elf32_Off;
+typedef uint64_t Elf64_Off;
+
+/* Type for section indices, which are 16-bit quantities.  */
+typedef uint16_t Elf32_Section;
+typedef uint16_t Elf64_Section;
+
+/* Type for version symbol information.  */
+typedef Elf32_Half Elf32_Versym;
+typedef Elf64_Half Elf64_Versym;
+```
+
+
 
 The ELF header is described by the type Elf32_Ehdr or Elf64_Ehdr:
 
@@ -97,6 +112,22 @@ typedef struct {
 ###### `e_ident`
 
 这个字节数组说明如何解释文件,依赖于处理器或后面的内容.数组内的任何事物(key and valueIndex)被命名为宏,key的前缀为**EI_**,valueIndex的前缀为**ELF**,每一字节宏与意图如下:
+
+
+
+```
+typedef struct {
+    unsigned char    ei_identification[4];
+    unsigned char    ei_class;
+    unsigned char    ei_data;
+    unsigned char    ei_version;
+    unsigned char    ei_osabi;
+    unsigned char    ei_pad[6];
+    unsigned char    ei_ident_size;
+} e_ident_t;
+```
+
+
 
 - EI_MAG0 EI_MAG1 EI_MAG2 EI_MAG3: 
   被称为*Magic number*,ELF文件格式标志;
@@ -147,11 +178,13 @@ typedef struct {
   文件版本;
 
   ```
+  #define EI_VERSION	  6		/* File version byte index */
+  
   #define EV_NONE       0      /* Invalid ELF version */
   #define EV_CURRENT    1      /* Current version */
   #define EV_NUM        2
   ```
-  - EI_OSABI[^3]:
+- EI_OSABI[^3]:
     reference from */usr/include/elf.h*
 
   ```
@@ -175,8 +208,18 @@ typedef struct {
   #define ELFOSABI_STANDALONE  255           /* Standalone (embedded) application */
   ```
 
+- EI_ABIVERSION
+
+  ```
+  #define EI_ABIVERSION	8		/* ABI version */
+  ```
+
 - EI_PAD:
   填充6位.没有什么作用,只是为了占位&对齐.
+
+  ```
+  #define EI_PAD		9		/* Byte index of padding bytes */
+  ```
 
 - EI_NIDENT:
   *e_ident*数组的尺寸;
@@ -346,7 +389,7 @@ ELF版本;
 
 ###### `e_shoff`
 
-节头表的文件偏移;
+节区头表的文件偏移;
 
 如果没有,为零;
 
@@ -369,13 +412,13 @@ ELF头的尺寸;
 
 ###### `e_shentsize`
 
-节头表的单个条目的尺寸,表中每个条目尺寸相同;
+节区头表的单个条目的尺寸,表中每个条目尺寸相同;
 
 ###### `e_shnum`
 
-节头表的条目数;
+节区头表的条目数;
 
-如果没有节头表为零;
+如果没有节区头表为零;
 
 如果大于等于*SHN_LORESERVE(0xff00)*,字段保存零,真实的数据是保存在*sh_size*中.否,*sh_size*为零;
 
@@ -449,7 +492,7 @@ typedef enum <Elf32_Word> {
                                 内存段开始处。如果 p_memsz 大于 p_filesz,“剩余”的字节要清零。
                                 p_filesz 不能大于 p_memsz。可加载的段在程序头部表格中根据 p_vaddr 成员按升序排列。 */                 
     PT_DYNAMIC  =2,          /* 动态链接段 */
-    PT_INTERP    =3,         /* 段给出一个 NULL 结尾的字符串的位置和长度,该字符串将被当作解释器调用。
+    PT_INTERP   =3,          /* 段给出一个 NULL 结尾的字符串的位置和长度,该字符串将被当作解释器调用。
                                 这种段类型仅对与可执行文件有意义(尽管也可能在共享目标文件上发生)。在一个文件中不能出现一次以上。
                                 如果存在这种类型的段,它必须在所有可加载段项目的前面。 */      
     PT_NOTE     =4,          /* 段指定注释的位置 */
@@ -465,6 +508,22 @@ typedef enum <Elf32_Word> {
 typedef p_type32_e p_type64_e;
 ```
 
+
+###### `p_flags`
+
+与段相关的标志掩码;
+
+代码段通常有 read and execute 权限;
+
+数据段通常有 read and write and execute 权限;
+
+```
+#define PF_X		(1 << 0)	/* Segment is executable */
+#define PF_W		(1 << 1)	/* Segment is writable */
+#define PF_R		(1 << 2)	/* Segment is readable */
+#define PF_MASKOS	0x0ff00000	/* OS-specific */
+#define PF_MASKPROC	0xf0000000	/* Processor-specific */
+```
 
 
 ###### `p_offset`
@@ -488,22 +547,6 @@ typedef p_type32_e p_type64_e;
 ###### `p_memsz`
 
 段在内容映射中的尺寸;
-
-###### `p_flags`
-
-与段相关的标志掩码;
-
-代码段通常有 read and execute 权限;
-
-数据段通常有 read and write and execute 权限;
-
-```
-#define PF_X		(1 << 0)	/* Segment is executable */
-#define PF_W		(1 << 1)	/* Segment is writable */
-#define PF_R		(1 << 2)	/* Segment is readable */
-#define PF_MASKOS	0x0ff00000	/* OS-specific */
-#define PF_MASKPROC	0xf0000000	/* Processor-specific */
-```
 
 ###### `p_align`
 
@@ -583,6 +626,44 @@ typedef struct
 } Elf64_Shdr;
 ```
 
+
+
+一些节:
+
+| Name      | Type         | Attributions                        | Descriptions                                                 |
+| --------- | ------------ | ----------------------------------- | ------------------------------------------------------------ |
+| .bbs      | SHT_NOBITS   | SHF_ALLOC<br />SHF_WRITE<br />+     | 未初始化数据节区,程序运行时,会被初始化为0;                   |
+| .comment  | SHT_PROGBITS | -                                   | 版本控制信息;                                                |
+| .data     | SHT_PROGBITS | SHF_ALLOC<br />SHF_WRITE<br />+     | 初始化的数据;                                                |
+| .data1    | SHT_PROGBITS | SHF_ALLOC<br />SHF_WRITE<br />+     |                                                              |
+| .debug    | SHT_PROGBITS | -                                   | 调试符号信息;                                                |
+| .dynamic  | SHT_DYNAMIC  | SHF_WRITE<br />+                    | 动态链接信息                                                 |
+| .dynstr   | SHT_STRTAB   | SHF_ALLOC                           | 动态链接的字符串,大多数情况下这些字符串代表了符号表相关的名称; |
+| .dynsym   | SHT_DYNSYM   | SHF_ALLOC                           | 动态链接符号表;                                              |
+| .fini     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 些节区包含可执行的指令,是进程终止代码的一的部分;程序正常退出时,<br />系统将安排执行这里的代码; |
+| .got      | SHT_PROGBITS | -                                   | 全局偏移表;                                                  |
+| .hash     | SHT_HASH     | SHF_ALLOC                           | 符号哈希表;                                                  |
+| .init     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 节区包含可执行的指令,是进程初始化代码的一的部分;程序开始执行时,<br />系统在调用入口函数之前,系统将安排执行这里的代码; |
+| .interp   | SHT_PROGBITS |                                     | 节区包含程序解释器的路径名;如果程序包含一个可加载的段,段中包含此节区,<br />那么节区的属性将包含SHF_ALLOC; |
+| .line     | SHT_PROGBITS | -                                   | 调试行号信息,描述了源码与机器码之间的对应关系;               |
+| .note     | SHT_NOTE     |                                     | 注释信息,有独立的格式; |
+| .plt      | SHT_PROGBITS |                                     | 过程链接表; |
+| .relname  | SHT_REL      | SHF_ALLOC | 重定位信息;如果文件中包含可加载的段,段中有重定位内容,节区的属性将包含<br />SHF_ALLOC位,否为0;传统上的name根据重定位所适用的节区给定;例如, .text节区<br />的重定位名为 .rel.text 或 .rela.text; |
+| .relaname | SHT_RELA     | SHF_ALLOC | 重定位信息;如果文件中包含可加载的段,段中有重定位内容,节区的属性将包含<br />SHF_ALLOC位,否为0;传统上的name根据重定位所适用的节区给定;例如, .text节区<br />的重定位名为 .rel.text 或 .rela.text; |
+| .rodata   | SHT_PROGBITS |                                     | 只读数据; |
+| .rodata1  | SHT_PROGBITS |                                     | 只读数据; |
+| .shstrtab | SHT_STRTAB   |                                     | 节区名表; |
+| .strtab   | SHT_STRTAB   |                                     | 字符串表;与符号表项相关的名称; |
+| .symtab   | SHT_SYMTAB   |                                     | 符号表; |
+| .text     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 程序代码节区; |
+
+
+
+```
+.bbs
+未初始化的数据;
+```
+
 ### `sh_name`
 
 是一个索引;
@@ -640,24 +721,134 @@ typedef struct
 
 ### `sh_flags`
 
+节区属性集标志;
+
+```
+/* Legal values for sh_flags (section flags).  */
+#define SHF_WRITE             (1 << 0)      /* Writable */
+#define SHF_ALLOC             (1 << 1)      /* Occupies memory during execution */
+#define SHF_EXECINSTR         (1 << 2)      /* Executable */
+#define SHF_MERGE             (1 << 4)      /* Might be merged */
+#define SHF_STRINGS           (1 << 5)      /* Contains nul-terminated strings */
+#define SHF_INFO_LINK         (1 << 6)      /* `sh_info' contains SHT index */
+#define SHF_LINK_ORDER        (1 << 7)      /* Preserve order after combining */
+#define SHF_OS_NONCONFORMING  (1 << 8)      /* Non-standard OS specific handling required */
+#define SHF_GROUP             (1 << 9)      /* Section is member of a group.  */
+#define SHF_TLS               (1 << 10)     /* Section hold thread-local data.  */
+#define SHF_COMPRESSED        (1 << 11)     /* Section with compressed data. */
+#define SHF_MASKOS            0x0ff00000    /* OS-specific.  */
+#define SHF_MASKPROC          0xf0000000    /* Processor-specific */
+#define SHF_ORDERED           (1 << 30)     /* Special ordering requirement (Solaris).  */
+#define SHF_EXCLUDE           (1U << 31)    /* Section is excluded unless referenced or allocated (Solaris).*/
+```
+
 
 
 ### `sh_addr`
+
+如果节区出现在进程的内存映像中,给出第一个字节应处的位置;否为零;
+
 ### `sh_offset`
+
+节区在文件的位置;
+
+如果节区的类型是*SHT_NOBITS*,在文件中它是没有空间的,给出的位置只是概念性的;
+
 ### `sh_size`
+
+节区的尺寸;
+
+除开节区类型*SHT_NOBITS*,其它类型说明其节区尺寸在这个字段中;
+
+如果节区的类型是*SHT_NOBITS*,在文件中它是没有空间的,但尺寸可能非零;
+
 ### `sh_link`
+
+节区头表索引链接;
+
+解释依赖于类型;
+
 ### `sh_info`
+
+额外类型;
+
+解释依赖于类型;
+
 ### `sh_addralign`
+
+某些节区有地址对齐的约束;
+
+如果一个节区保存了双字,必须确保整个节区以双字对齐;
+
+*sh_addr*对*sh_addralign*取模,结果必须为零;
+
+只有0或2的整数幂被允许;
+
+0或1表明没有对齐约束;
+
 ### `sh_entsize`
 
+有些节区的内容是一张表,其中每一个条目的大小是固定的,比如符号表;
+
+对于这种表来说,该字段指明这种表中的每一个表项的大小;
+
+如果该字段的值为0,则表示该节的内容不是这种表;
 
 
 
 
 
+# `HelloWorld.exe`
+
+```
+//HelloWorld.c
+
+#include <stdio.h>
+
+
+int main()
+{
+	printf("Hello World!\n");
+	return 0;
+}
+```
+
+```
+gcc HelloWorld.c -o HelloWorld.exe
+```
+
+```
+./HelloWorld.exe
+```
 
 
 
+## `e_ident`
+
+```
+00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+
+7F 45 4C 46 02 01 01 00 00 00 00 00 00 00 00 00
+```
+
+```
+unsigned char    ei_identification[4];
+unsigned char    ei_class;
+unsigned char    ei_data;
+unsigned char    ei_version;
+unsigned char    ei_osabi;
+unsigned char    ei_pad[6];
+unsigned char    ei_ident_size;
+
+ei_identification = 7F 45 4C 46    ==> 字符串 .ELF
+ei_class          = 02             ==> 64位程序
+ei_data           = 01             ==> 小端
+ei_version        = 01             ==> Current version
+ei_osabi          = 00             ==> UNIX System V ABS
+ei_osabi          = 00
+ei_pad            = 00 00 00 00 00 00
+ei_ident_size     = 00
+```
 
 
 
