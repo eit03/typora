@@ -3,9 +3,11 @@
 ***
 
 # `1. Brief Introduction`
+
 ELF[^1]是一种对象文件的格式，用于定义不同类型的对象文件(Object files)中都放了什么东西、以及都以什么样的格式去放这些东西。
 
 # `2. Category`
+
 - 可执行文件(Executable File) .exe) 包含适合于执行的一个程序，此文件规定了exec() 如何创建一个程序的进程映像。
 
 - 可重定位文件(Relocatable File) .o)包含适合于与其他目标文件链接来创建可执行文件或者共享目标文件的代码和数据。
@@ -637,24 +639,28 @@ typedef struct
 | .data     | SHT_PROGBITS | SHF_ALLOC<br />SHF_WRITE<br />+     | 初始化的数据;                                                |
 | .data1    | SHT_PROGBITS | SHF_ALLOC<br />SHF_WRITE<br />+     |                                                              |
 | .debug    | SHT_PROGBITS | -                                   | 调试符号信息;                                                |
-| .dynamic  | SHT_DYNAMIC  | SHF_WRITE<br />+                    | 动态链接信息                                                 |
-| .dynstr   | SHT_STRTAB   | SHF_ALLOC                           | 动态链接的字符串,大多数情况下这些字符串代表了符号表相关的名称; |
-| .dynsym   | SHT_DYNSYM   | SHF_ALLOC                           | 动态链接符号表;                                              |
-| .fini     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 些节区包含可执行的指令,是进程终止代码的一的部分;程序正常退出时,<br />系统将安排执行这里的代码; |
+| .dynamic  | SHT_DYNAMIC  | SHF_WRITE<br />+                    | 动态链接表                                                |
+| .dynstr   | SHT_STRTAB   | SHF_ALLOC                           | 保存了动态符号,节区头指向的节区是null-terminate字符串集; |
+| .dynsym   | SHT_DYNSYM   | SHF_ALLOC                           | 动态符号表间接给出了调试符号字符串; <br />**sh_link** 的内容是节区头的索引,这个节区头一般是 **.dynstr** ,它的节区的数据是null-terminate字符串集; <br />**.dynsym** 的节区的数据是 **Elf64_Sym** 结构的数组,每个结构指出一个调试符号位置, **Elf64_Shdr::sh_entsize**指出条目尺寸,**Elf64_Shdr::sh_size**指出总条目尺寸,间接的就可以得到条目数量了;<br />**Elf64_Sym::st_name** 字段给出了相对于 **sh_link** 指出的节区的数据的 FAO[^FAO],这个FAO的位置就是我们要的动态符号了; |
+| .fini     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 某些节区包含可执行的指令,是进程终止代码的一的部分;程序正常退出时,<br />系统将安排执行这里的代码; |
 | .got      | SHT_PROGBITS | -                                   | 全局偏移表;                                                  |
 | .hash     | SHT_HASH     | SHF_ALLOC                           | 符号哈希表;                                                  |
 | .init     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 节区包含可执行的指令,是进程初始化代码的一的部分;程序开始执行时,<br />系统在调用入口函数之前,系统将安排执行这里的代码; |
-| .interp   | SHT_PROGBITS |                                     | 节区包含程序解释器的路径名;如果程序包含一个可加载的段,段中包含此节区,<br />那么节区的属性将包含SHF_ALLOC; |
+| .interp   | SHT_PROGBITS |                                     | 节区包含程序解释器[^4]的路径名;如果程序包含一个可加载的段,段中包含此节区,<br />那么节区的属性将包含SHF_ALLOC; |
 | .line     | SHT_PROGBITS | -                                   | 调试行号信息,描述了源码与机器码之间的对应关系;               |
 | .note     | SHT_NOTE     |                                     | 注释信息,有独立的格式; |
+| .note.ABI-tag | SHT_NOTE | | 节区用于声明ELF镜像预期的运行时ABI;可能包含操作系统名各运行时版本; |
+| .note.gnu.build-id | SHT_NOTE | | 节区用于保存id,唯一标识ELF镜像的id;有相同id的不同文件应该包含相同的可执行的内容;详见GNU链接器(ld)的 **--build-id** 选项; |
+| .note.GNU-stack | SHT_PROGBITS | SHF_EXECINSTR | 声明栈属性;表明GNU链接器,目标文件请求一个求执行的堆栈; |
+| .note.openbsd.ident | SHT_NOTE | | OpenBSD原生可执行程序通常包含这个部分来标识自己，这样内核就可以在加载文件时绕过任何兼容ELF二进制模拟测试。 |
 | .plt      | SHT_PROGBITS |                                     | 过程链接表; |
 | .relname  | SHT_REL      | SHF_ALLOC | 重定位信息;如果文件中包含可加载的段,段中有重定位内容,节区的属性将包含<br />SHF_ALLOC位,否为0;传统上的name根据重定位所适用的节区给定;例如, .text节区<br />的重定位名为 .rel.text 或 .rela.text; |
 | .relaname | SHT_RELA     | SHF_ALLOC | 重定位信息;如果文件中包含可加载的段,段中有重定位内容,节区的属性将包含<br />SHF_ALLOC位,否为0;传统上的name根据重定位所适用的节区给定;例如, .text节区<br />的重定位名为 .rel.text 或 .rela.text; |
 | .rodata   | SHT_PROGBITS |                                     | 只读数据; |
 | .rodata1  | SHT_PROGBITS |                                     | 只读数据; |
-| .shstrtab | SHT_STRTAB   |                                     | 节区名表; |
+| .shstrtab | SHT_STRTAB   |                                     | 节区名字符串表,管理的空间保存所有的节区名字符串; |
 | .strtab   | SHT_STRTAB   |                                     | 字符串表;与符号表项相关的名称; |
-| .symtab   | SHT_SYMTAB   |                                     | 符号表; |
+| .symtab   | SHT_SYMTAB   |                                     | 符号表;  **Elf64_Sym**; |
 | .text     | SHT_PROGBITS | SHF_ALLOC<br />SHF_EXECINSTR<br />+ | 程序代码节区; |
 
 
@@ -666,11 +672,9 @@ typedef struct
 
 ### `sh_name`
 
-是一个索引;
+间接指出节区名,节区名是一个null结尾的字符串;
 
-字符串表节中的某索引,指出节名位置;
-
-名节是零结尾的字符串;
+字段的值是一个偏移,相对于**节区名字符串表**的**内容**的偏移;
 
 ### `sh_type`
 
@@ -729,7 +733,7 @@ typedef struct
 #define SHF_ALLOC             (1 << 1)      /* Occupies memory during execution */
 #define SHF_EXECINSTR         (1 << 2)      /* Executable */
 #define SHF_MERGE             (1 << 4)      /* Might be merged */
-#define SHF_STRINGS           (1 << 5)      /* Contains nul-terminated strings */
+#define SHF_STRINGS           (1 << 5)      /* Contains null-terminated strings */
 #define SHF_INFO_LINK         (1 << 6)      /* `sh_info' contains SHT index */
 #define SHF_LINK_ORDER        (1 << 7)      /* Preserve order after combining */
 #define SHF_OS_NONCONFORMING  (1 << 8)      /* Non-standard OS specific handling required */
@@ -764,15 +768,27 @@ typedef struct
 
 ### `sh_link`
 
-节区头表索引链接;
-
-解释依赖于类型;
-
 ### `sh_info`
 
-额外类型;
-
-解释依赖于类型;
+| sh_type                   | sh_link                                                      | sh_info                                                      |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `SHT_DYNAMIC`             | The section header index of the associated string table;此节区头的节区中元素所引用的字符串的节区头索引; | `0`                                                          |
+| `SHT_HASH`                | The section header index of the associated symbol table.     | `0`                                                          |
+| `SHT_REL` `SHT_RELA`      | The section header index of the associated symbol table.     | If the `sh_flags` member contains the `SHF_INFO_LINK` flag, the section header index of the section to which the relocation applies, otherwise `0`. See also [Table 12-10](https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter7-1.html#chapter6-28341) and [Relocation Sections](https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-54839.html#scrolltoc). |
+| `SHT_SYMTAB` `SHT_DYNSYM` | The section header index of the associated string table.     | One greater than the symbol table index of the last local symbol, `STB_LOCAL`. |
+| `SHT_GROUP`               | The section header index of the associated symbol table.     | The symbol table index of an entry in the associated symbol table. The name of the specified symbol table entry provides a signature for the section group. |
+| `SHT_SYMTAB_SHNDX`        | The section header index of the associated symbol table.     | `0`                                                          |
+| `SHT_SUNW_cap`            | If symbol capabilities exist, the section header index of the associated `SHT_SUNW_capinfo` table, otherwise `0`. | If any capabilities refer to named strings, the section header index of the associated string table, otherwise `0`. |
+| `SHT_SUNW_capinfo`        | The section header index of the associated symbol table.     | For a dynamic object, the section header index of the associated `SHT_SUNW_capchain` table, otherwise `0`. |
+| `SHT_SUNW_symsort`        | The section header index of the associated symbol table.     | `0`                                                          |
+| `SHT_SUNW_tlssort`        | The section header index of the associated symbol table.     | `0`                                                          |
+| `SHT_SUNW_LDYNSYM`        | The section header index of the associated string table. This index is the same string table used by the `SHT_DYNSYM` section. | One greater than the symbol table index of the last local symbol, `STB_LOCAL`. Since `SHT_SUNW_LDYNSYM` only contains local symbols, `sh_info` is equivalent to the number of symbols in the table. |
+| `SHT_SUNW_move`           | The section header index of the associated symbol table.     | `0`                                                          |
+| `SHT_SUNW_COMDAT`         | `0`                                                          | `0`                                                          |
+| `SHT_SUNW_syminfo`        | The section header index of the associated symbol table.     | The section header index of the associated `.dynamic` section. |
+| `SHT_SUNW_verdef`         | The section header index of the associated string table.     | The number of version definitions within the section.        |
+| `SHT_SUNW_verneed`        | The section header index of the associated string table.     | The number of version dependencies within the section.       |
+| `SHT_SUNW_versym`         | The section header index of the associated symbol table.     | `0`                                                          |
 
 ### `sh_addralign`
 
@@ -796,59 +812,382 @@ typedef struct
 
 
 
-
-
-# `HelloWorld.exe`
+# `重定位表条目结构`
 
 ```
-//HelloWorld.c
+/* Relocation table entry without addend (in section of type SHT_REL).  */
 
-#include <stdio.h>
-
-
-int main()
+typedef struct
 {
-	printf("Hello World!\n");
-	return 0;
-}
+  Elf32_Addr	r_offset;		/* Address */
+  Elf32_Word	r_info;			/* Relocation type and symbol index */
+} Elf32_Rel;
+
+/* I have seen two different definitions of the Elf64_Rel and
+   Elf64_Rela structures, so we'll leave them out until Novell (or
+   whoever) gets their act together.  */
+/* The following, at least, is used on Sparc v9, MIPS, and Alpha.  */
+
+typedef struct
+{
+  Elf64_Addr	r_offset;		/* Address */
+  Elf64_Xword	r_info;			/* Relocation type and symbol index */
+} Elf64_Rel;
+```
+
+
+
+```
+/* Relocation table entry with addend (in section of type SHT_RELA).  */
+
+typedef struct
+{
+  Elf32_Addr	r_offset;		/* Address */
+  Elf32_Word	r_info;			/* Relocation type and symbol index */
+  Elf32_Sword	r_addend;		/* Addend */
+} Elf32_Rela;
+
+typedef struct
+{
+  Elf64_Addr	r_offset;		/* Address */
+  Elf64_Xword	r_info;			/* Relocation type and symbol index */
+  Elf64_Sxword	r_addend;		/* Addend */
+} Elf64_Rela;
+```
+
+
+
+# `.dynmic节区条目结构`
+
+```
+/* Dynamic section entry.  */
+
+typedef struct {
+	Elf32_Sword	     d_tag;       /* Dynamic entry type */
+	union {
+		Elf32_Word  d_val;       /* Integer value */
+		Elf32_Addr  d_ptr;		/* Address value */
+	} d_un;
+} Elf32_Dyn;
+
+typedef struct {
+	Elf64_Sxword	 d_tag;		/* Dynamic entry type */
+	union {
+		Elf64_Xword  d_val;		/* Integer value */
+		Elf64_Addr   d_ptr;		/* Address value */
+	} d_un;
+} Elf64_Dyn;
 ```
 
 ```
-gcc HelloWorld.c -o HelloWorld.exe
+/* Legal values for d_tag (dynamic entry type).  */
+
+#define DT_NULL		0		/* Marks end of dynamic section */
+#define DT_NEEDED	1		/* Name of needed library */
+#define DT_PLTRELSZ	2		/* Size in bytes of PLT relocs */
+#define DT_PLTGOT	3		/* Processor defined value */
+#define DT_HASH		4		/* Address of symbol hash table */
+#define DT_STRTAB	5		/* Address of string table */
+#define DT_SYMTAB	6		/* Address of symbol table */
+#define DT_RELA		7		/* Address of Rela relocs */
+#define DT_RELASZ	8		/* Total size of Rela relocs */
+#define DT_RELAENT	9		/* Size of one Rela reloc */
+#define DT_STRSZ	10		/* Size of string table */
+#define DT_SYMENT	11		/* Size of one symbol table entry */
+#define DT_INIT		12		/* Address of init function */
+#define DT_FINI		13		/* Address of termination function */
+#define DT_SONAME	14		/* Name of shared object */
+#define DT_RPATH	15		/* Library search path (deprecated) */
+#define DT_SYMBOLIC	16		/* Start symbol search here */
+#define DT_REL		17		/* Address of Rel relocs */
+#define DT_RELSZ	18		/* Total size of Rel relocs */
+#define DT_RELENT	19		/* Size of one Rel reloc */
+#define DT_PLTREL	20		/* Type of reloc in PLT */
+#define DT_DEBUG	21		/* For debugging; unspecified */
+#define DT_TEXTREL	22		/* Reloc might modify .text */
+#define DT_JMPREL	23		/* Address of PLT relocs */
+#define	DT_BIND_NOW	24		/* Process relocations of object */
+#define	DT_INIT_ARRAY	25		/* Array with addresses of init fct */
+#define	DT_FINI_ARRAY	26		/* Array with addresses of fini fct */
+#define	DT_INIT_ARRAYSZ	27		/* Size in bytes of DT_INIT_ARRAY */
+#define	DT_FINI_ARRAYSZ	28		/* Size in bytes of DT_FINI_ARRAY */
+#define DT_RUNPATH	29		/* Library search path */
+#define DT_FLAGS	30		/* Flags for the object being loaded */
+#define DT_ENCODING	32		/* Start of encoded range */
+#define DT_PREINIT_ARRAY 32		/* Array with addresses of preinit fct*/
+#define DT_PREINIT_ARRAYSZ 33		/* size in bytes of DT_PREINIT_ARRAY */
+#define	DT_NUM		34		/* Number used */
+#define DT_LOOS		0x6000000d	/* Start of OS-specific */
+#define DT_HIOS		0x6ffff000	/* End of OS-specific */
+#define DT_LOPROC	0x70000000	/* Start of processor-specific */
+#define DT_HIPROC	0x7fffffff	/* End of processor-specific */
+#define	DT_PROCNUM	DT_MIPS_NUM	/* Most used by any processor */
+
+/* DT_* entries which fall between DT_VALRNGHI & DT_VALRNGLO use the
+   Dyn.d_un.d_val field of the Elf*_Dyn structure.  This follows Sun's
+   approach.  */
+#define DT_VALRNGLO	0x6ffffd00
+#define DT_GNU_PRELINKED 0x6ffffdf5	/* Prelinking timestamp */
+#define DT_GNU_CONFLICTSZ 0x6ffffdf6	/* Size of conflict section */
+#define DT_GNU_LIBLISTSZ 0x6ffffdf7	/* Size of library list */
+#define DT_CHECKSUM	0x6ffffdf8
+#define DT_PLTPADSZ	0x6ffffdf9
+#define DT_MOVEENT	0x6ffffdfa
+#define DT_MOVESZ	0x6ffffdfb
+#define DT_FEATURE_1	0x6ffffdfc	/* Feature selection (DTF_*).  */
+#define DT_POSFLAG_1	0x6ffffdfd	/* Flags for DT_* entries, effecting
+					   the following DT_* entry.  */
+#define DT_SYMINSZ	0x6ffffdfe	/* Size of syminfo table (in bytes) */
+#define DT_SYMINENT	0x6ffffdff	/* Entry size of syminfo */
+#define DT_VALRNGHI	0x6ffffdff
+#define DT_VALTAGIDX(tag)	(DT_VALRNGHI - (tag))	/* Reverse order! */
+#define DT_VALNUM 12
+
+/* DT_* entries which fall between DT_ADDRRNGHI & DT_ADDRRNGLO use the
+   Dyn.d_un.d_ptr field of the Elf*_Dyn structure.
+   If any adjustment is made to the ELF object after it has been
+   built these entries will need to be adjusted.  */
+#define DT_ADDRRNGLO	0x6ffffe00
+#define DT_GNU_HASH	0x6ffffef5	/* GNU-style hash table.  */
+#define DT_TLSDESC_PLT	0x6ffffef6
+#define DT_TLSDESC_GOT	0x6ffffef7
+#define DT_GNU_CONFLICT	0x6ffffef8	/* Start of conflict section */
+#define DT_GNU_LIBLIST	0x6ffffef9	/* Library list */
+#define DT_CONFIG	    0x6ffffefa	/* Configuration information.  */
+#define DT_DEPAUDIT	    0x6ffffefb	/* Dependency auditing.  */
+#define DT_AUDIT	    0x6ffffefc	/* Object auditing.  */
+#define	DT_PLTPAD	    0x6ffffefd	/* PLT padding.  */
+#define	DT_MOVETAB	    0x6ffffefe	/* Move table.  */
+#define DT_SYMINFO	    0x6ffffeff	/* Syminfo table.  */
+#define DT_ADDRRNGHI	0x6ffffeff
+#define DT_ADDRTAGIDX(tag)	(DT_ADDRRNGHI - (tag))	/* Reverse order! */
+#define DT_ADDRNUM 11
+
+/* The versioning entry types.  The next are defined as part of the
+   GNU extension.  */
+#define DT_VERSYM	    0x6ffffff0
+#define DT_RELACOUNT	0x6ffffff9
+#define DT_RELCOUNT	     0x6ffffffa
+
+/* These were chosen by Sun.  */
+#define DT_FLAGS_1	   0x6ffffffb	/* State flags, see DF_1_* below.  */
+#define	DT_VERDEF	  0x6ffffffc	/* Address of version definition table */
+#define	DT_VERDEFNUM   0x6ffffffd	/* Number of version definitions */
+#define	DT_VERNEED     0x6ffffffe	/* Address of table with needed versions */
+#define	DT_VERNEEDNUM  0x6fffffff	/* Number of needed versions */
+#define DT_VERSIONTAGIDX(tag)	(DT_VERNEEDNUM - (tag))	/* Reverse order! */
+#define DT_VERSIONTAGNUM 16
+
+/* Sun added these machine-independent extensions in the "processor-specific" range.  Be compatible.  */
+#define DT_AUXILIARY    0x7ffffffd      /* Shared object to load before self */
+#define DT_FILTER       0x7fffffff      /* Shared object to get values from */
+#define DT_EXTRATAGIDX(tag)	((Elf32_Word)-((Elf32_Sword) (tag) <<1>>1)-1)
+#define DT_EXTRANUM	3
 ```
 
+| macro     | value | d_un                                                         |
+| --------- | ----- | ------------------------------------------------------------ |
+| DT_NEEDED | 1     | 此条目指出依赖库名null-terminal字符串; **d_un.d_val**的值是一个FAO,相对于**.dynmic**节区头指出的节区头的节区的偏移; |
+| DT_INIT   | 12    | 此条目指出初始化函数(在入口点前运行的函数)地址; 好像越界了,以后再理解; |
+| DT_FINI   | 13    | 此条目指出结束函数地址; 好像越界了,以后再理解;               |
+|           |       |                                                              |
+|           |       |                                                              |
+|           |       |                                                              |
+|           |       |                                                              |
+
+# `Specified Section`
+
+
+
+## `String Table Section`
+
+字符串表节区保存null-terminated字符序列集;目标文件使用这些字符串代表符号各节区名;
+
+如果要引用这些字符串,一般给定字符串表节区头,再给定这个节区头的节区的FAO;
+
+
+
+字符串表的第一个字节是0,被当作空字符串;最后一个字节也是0;引用字符串表的第一个字节,可能代表是一个**空名**或**没有名字**,依赖于环境;
+
+
+
+一个空字符串表节区是被允许的,这样的节区,节区头的**sh_size**必须为0;对于空字符串表节区,非0的FAO是无效的;
+
+一个字符串表FAO可以引用字符串表任何字节;
+
+一个字符串可能出现多次;
+
+可以引用子串;
+
+未引用的字符串也是被允许的;
+
+
+
+### `Section Header String Table Section`
+
+节区头字符串表节区保存节区名字符串集;
+
+ELF头指出这个节区头在节区头表的索引;
+
+每个节区头的**sh_name**字段给出相对于节区头字符串表节区的FAO,这样也就拿到节区名了;
+
+命名是.shstrtab;
+
+
+
+
+
+### `String Table Section`
+
+
+
+## `Symbol Table Section`
+
+符号表节区保存**符号定义**和**符号引用**信息;
+
+符号表的的元素是 **Elf64_Sym** 结构序列;
+
+符号表索引是数组的下标,索引0指定表中的第一个条目,并充当未定义的符号索引;
+
+
+
+### `Elf64_Sym`
+
 ```
-./HelloWorld.exe
+typedef struct {
+    Elf32_Word      st_name;
+    Elf32_Addr      st_value;
+    Elf32_Word      st_size;
+    unsigned char   st_info;
+    unsigned char   st_other;
+    Elf32_Half      st_shndx;
+} Elf32_Sym;
+
+typedef struct {
+    Elf64_Word      st_name;
+    unsigned char   st_info;
+    unsigned char   st_other;
+    Elf64_Half      st_shndx;
+    Elf64_Addr      st_value;
+    Elf64_Xword     st_size;
+} Elf64_Sym;
+
+
 ```
 
+`st_name`
+
+FAO,相对于某一节区(由节区表给出),这个位置就是符号字符串了;
+
+如果为零,代表没有符号;
+
+`st_info`
+
+符号的类型与绑定属性;
+
+这1字节分二部份来看:高4位是绑定属性,低4位是类型属性;
+
+| Name | Value | Descriptions |
+| ------------ | ----- | ------------ |
+| STB_LOCAL  | 0   | Local symbol. These symbols are not visible outside the object file containing their definition. Local symbols of the same name can exist in multiple files without interfering with each other. |
+| STB_GLOBAL | 1   | Global symbols. These symbols are visible to all object files being combined. One file's definition of a global symbol satisfies another file's undefined reference to the same global symbol. |
+| STB_WEAK   | 2   | Weak symbols. These symbols resemble global symbols, but their definitions have lower precedence. |
+| STB_LOOS   | 10  | Values in this inclusive range are reserved for operating system-specific semantics. |
+| STB_HIOS   | 12  | Values in this inclusive range are reserved for operating system-specific semantics. |
+| STB_LOPROC | 13  | Values in this inclusive range are reserved for processor-specific semantics. |
+| STB_HIPROC | 15  | Values in this inclusive range are reserved for processor-specific semantics. |
+
+| Name | Value | Descriptions |
+| ------------ | ----- | ------------ |
+| STT_NOTYPE         | 0  | The symbol type is not specified. |
+| STT_OBJECT         | 1  | This symbol is associated with a data object, such as a variable, an array, and so forth. |
+| STT_FUNC           | 2  | This symbol is associated with a function or other executable code. |
+| STT_SECTION        | 3  | This symbol is associated with a section. Symbol table entries of this type exist primarily for relocation and normally have `STB_LOCAL` binding. |
+| STT_FILE           | 4  | Conventionally, the symbol's name gives the name of the source file that is associated with the object file. A file symbol has `STB_LOCAL` binding and a section index of `SHN_ABS`. This symbol, if present, precedes the other `STB_LOCAL` symbols for the file.                                                                                            Symbol index 1 of the `SHT_SYMTAB` is an `STT_FILE` symbol representing the object file. Conventionally, this symbol is followed by the files `STT_SECTION` symbols. These section symbols are then followed by any global symbols that have been reduced to locals. |
+| STT_COMMON         | 5  | This symbol labels an uninitialized common block. This symbol is treated exactly the same as `STT_OBJECT`. |
+| STT_TLS            | 6  | The symbol specifies a thread-local storage entity. When defined,  this symbol gives the assigned offset for the symbol, not the actual  address.                                                                                        Thread-local storage relocations can only reference symbols with type `STT_TLS`. A reference to a symbol of type `STT_TLS` from an allocatable section, can only be achieved by using special thread-local storage relocations. See [Chapter 14, Thread-Local Storage](https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter8-1.html#scrolltoc) for details. A reference to a symbol of type `STT_TLS` from a non-allocatable section does not have this restriction. |
+| STT_LOOS           | 10 | Values in this inclusive range are reserved for operating system-specific semantics. |
+| STT_HIOS           | 12 | Values in this inclusive range are reserved for operating system-specific semantics. |
+| STT_LOPROC STT_SPARC_REGISTER | 13 | Values in this inclusive range are reserved for processor-specific semantics. |
+| STT_HIPROC         | 15 | Values in this inclusive range are reserved for processor-specific semantics. |
+
+`st_other`
+
+指明符号的可见性;
+
+| Name            | Value | Descriptions |
+| --------------- | ----- | --------------- |
+| STV_DEFAULT   | 0   | The visibility of symbols with the `STV_DEFAULT` attribute is specified by the symbol's binding type. Global symbols and weak symbols are visible outside of their defining component, the executable file or shared object. Local symbols are hidden. Global symbols and weak symbols can also be preempted. These symbols can by interposed by definitions of the same name in another component. |
+| STV_INTERNAL  | 1   | This visibility attribute is currently reserved. |
+| STV_HIDDEN    | 2   | A symbol that is defined in the current component is hidden if its name is not visible to other components. Such a symbol is necessarily protected. This attribute is used to control the external interface of a component. An object named by such a symbol can still be referenced from another component if its address is passed outside.                                A hidden symbol contained in a relocatable object is either removed or converted to `STB_LOCAL` binding when the object is included in an executable file or shared object. |
+| STV_PROTECTED | 3   | This visibility attribute ensures that a symbol remains global. This visibility can not be demoted, or eliminated by any other symbol visibility technique. A symbol with `STB_LOCAL` binding will not have `STV_EXPORTED` visibility. |
+| STV_EXPORTED  | 4   | This visibility attribute ensures that a symbol remains global, and that a single instance of the symbol definition is bound to by all references within a process. This visibility can not be demoted, or eliminated by any other symbol visibility technique. A symbol with `STB_LOCAL` binding will not have `STV_SINGLETON` visibility. A `STV_SINGLETON` can not be directly bound to. |
+| STV_SINGLETON | 5   | This visibility attribute extends `STV_HIDDEN`. A symbol that is defined in the current component as eliminate is not visible to other components. The symbol is not written to any symbol table of a dynamic executable or shared object from which the component is used. |
+| STV_ELIMINATE | 6   |  |
+
+The `STV_SINGLETON` visibility attribute can affect the resolution of symbols within an executable or shared object during link-editing. Only one instance of a singleton can be bound to from any reference within a process.
+
+A `STV_SINGLETON` can be combined with a `STV_DEFAULT` visibility attribute, with the `STV_SINGLETON` taking precedence. A `STV_EXPORT` can be combined with a `STV_DEFAULT` visibility attribute, with the `STV_EXPORT` taking precedence. A `STV_SINGLETON` or `STV_EXPORT` visibility can not be combined with any other visibility attribute. Such an event is deemed fatal to the link-edit.
+
+Other visibility attributes do not affect the resolution of symbols within an executable or shared object during link-editing. Such resolution is controlled by the binding type. Once the link-editor has chosen its resolution, these attributes impose two requirements. Both requirements are based on the fact that references in the code being linked might have been optimized to take advantage of the attributes.
+
+- All of the non-default visibility attributes, when applied to a  symbol reference, imply that a definition to satisfy that reference must  be provided within the object being linked. If this type of symbol  reference has no definition within the object being linked, then the  reference must have `STB_WEAK` binding. In this case, the reference is resolved to zero.
+- If any reference to a name, or definition of a name is a symbol with a  non-default visibility attribute, the visibility attribute is  propagated to the resolving symbol in the object being linked. If  different visibility attributes are specified for distinct instances of a  symbol, the most constraining visibility attribute is propagated to the  resolving symbol in the object being linked. The attributes, ordered  from least to most constraining, are `STV_PROTECTED`, `STV_HIDDEN` and `STV_INTERNAL`.
 
 
-## `e_ident`
 
-```
-00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+`st_shndx`
 
-7F 45 4C 46 02 01 01 00 00 00 00 00 00 00 00 00
-```
+Every symbol table entry is defined in relation to some section. This member holds the relevant section header table index. Some section indexes indicate special meanings. 
 
-```
-unsigned char    ei_identification[4];
-unsigned char    ei_class;
-unsigned char    ei_data;
-unsigned char    ei_version;
-unsigned char    ei_osabi;
-unsigned char    ei_pad[6];
-unsigned char    ei_ident_size;
+If this member contains `SHN_XINDEX`, then the actual section header index is too large to fit in this field. The actual value is contained in the associated section of type `SHT_SYMTAB_SHNDX`.
 
-ei_identification = 7F 45 4C 46    ==> 字符串 .ELF
-ei_class          = 02             ==> 64位程序
-ei_data           = 01             ==> 小端
-ei_version        = 01             ==> Current version
-ei_osabi          = 00             ==> UNIX System V ABS
-ei_osabi          = 00
-ei_pad            = 00 00 00 00 00 00
-ei_ident_size     = 00
-```
+
+
+| Name                | Value    | Descriptions |
+| ------------------- | -------- | ------------------- |
+| SHN_UNDEF         | 0      | An undefined, missing, irrelevant, or otherwise meaningless section reference. For example, a symbol **defined** relative to section number `SHN_UNDEF` is an undefined symbol. |
+| SHN_LORESERVE     | 0xff00 | The lower boundary of the range of reserved indexes. |
+| SHN_LOPROC        | 0xff00 | Values in this inclusive range are reserved for processor-specific semantics. |
+| SHN_BEFORE        | 0xff00 | Provide for initial and final section ordering in conjunction with the `SHF_LINK_ORDER` and `SHF_ORDERED` section flags. |
+| SHN_AFTER         | 0xff01 | Provide for initial and final section ordering in conjunction with the `SHF_LINK_ORDER` and `SHF_ORDERED` section flags. |
+| SHN_AMD64_LCOMMON | 0xff02 | x64 specific common block label. This label is similar to `SHN_COMMON`, but provides for identifying a large common block. |
+| SHN_HIPROC        | 0xff1f | Values in this inclusive range are reserved for processor-specific semantics. |
+| SHN_LOOS          | 0xff20 | Values in this inclusive range are reserved for operating system-specific semantics. |
+| SHN_LOSUNW        | 0xff3f | Values in this inclusive range are reserved for Sun-specific semantics. |
+| SHN_SUNW_IGNORE   | 0xff3f | This section index provides a temporary symbol definition within relocatable objects. Reserved for internal use by [`dtrace`(1M)](https://docs.oracle.com/cd/E23824_01/html/821-1462/index.html). |
+| SHN_HISUNW        | 0xff3f | Values in this inclusive range are reserved for Sun-specific semantics. |
+| SHN_HIOS          | 0xff3f | Values in this inclusive range are reserved for operating system-specific semantics. |
+| SHN_ABS           | 0xfff1 | Absolute values for the corresponding reference. For example, symbols defined relative to section number `SHN_ABS` have absolute values and are not affected by relocation. |
+| SHN_COMMON        | 0xfff2 | Symbols defined relative to this section are common symbols, such as FORTRAN `COMMON` or unallocated C external variables. These symbols are sometimes referred to as tentative. |
+| SHN_XINDEX        | 0xffff | An escape value indicating that the actual section header index is too large to fit in the containing field. The header section index is found in another location specific to the structure where the section index appears. |
+| SHN_HIRESERVE     | 0xffff | The upper boundary of the range of reserved indexes. The system reserves indexes between `SHN_LORESERVE` and `SHN_HIRESERVE`, inclusive. The values do not reference the section header table. The section header table does not contain entries for the reserved indexes. |
+
+
+
+`st_value`
+
+与符号相关的值,可以是绝对值或地址,依赖于环境;
+
+- In relocatable files, `st_value` holds alignment constraints for a symbol whose section index is `SHN_COMMON`.
+
+- In relocatable files, `st_value` holds a section offset for a defined symbol. `st_value` is an offset from the beginning of the section that `st_shndx` identifies.
+
+- In executable and shared object files, `st_value` holds a  virtual address. To make these files' symbols more useful for the runtime linker, the section offset (file interpretation) gives way to a  virtual address (memory interpretation) for which the section number is irrelevant.
+
+Although the symbol table values have similar meanings for different object files, the data allow efficient access by the appropriate programs.
+
+
+
+`st_size`
+
+许多符号都有相应的大小,例如,数据对象的大小是对象中包含的字节数.如果符号没有大小或大小未知,则此成员将保持值为零;
+
+
+
+## `Hash Table Section`
+
+
 
 
 
@@ -868,4 +1207,9 @@ ei_ident_size     = 00
 [^1]: Executable and Linkable Format
 [^2]: Application Binary Interfaces
 [^3]: Operation System Application Binary Interfaces
-
+[^4]: 程序解释器:加载动态库的程序,如ld-linux.so
+[^FA]: file address, offset value between file header to address specified
+[^FAO]: file address offset, offset value between two FA[^FA]
+[^VA]: virtual address
+[^VAO]: virtual address offset, offset value between two VA[^VA]
+[^RVA]: relative virtual addresses, offset value between image base address to  address specified
