@@ -106,25 +106,21 @@
    # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
    # locale-gen
    ```
-
    ```
    echo LANG=en_US.UTF-8 >> /etc/locale.conf
    ```
 
 10. Network configuration
-
-  ```
-  echo eit-pc >> /etc/hostname
-  ```
-
-  ```
-  vi /etc/hosts
-  
-  127.0.0.1    localhost
-  ::1		    localhost
-  127.0.1.1	eit-pc.localdomain	eit-pc
-  
-  ```
+    ```
+    echo eit-pc >> /etc/hostname
+    ```
+    ```
+    vi /etc/hosts
+    
+    127.0.0.1    localhost
+    ::1		    localhost
+    127.0.1.1	eit-pc.localdomain	eit-pc
+    ```
 
 11. Initramfs
 
