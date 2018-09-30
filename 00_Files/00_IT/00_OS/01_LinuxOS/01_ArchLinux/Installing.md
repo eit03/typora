@@ -1,5 +1,3 @@
-
-
 1. Verify the boot mode
 
    ```
@@ -62,16 +60,18 @@
    
    ext4文件系统的实现方式不同于fat,没有必要4K对齐.
    ```
-
    ```
    //挂载系统位置
    mount /dev/nvme0n1p3 /mnt
    
    mkdir /mnt/boot
-   mount /dev/nvme0n1p2 /mnt
+   mount /dev/nvme0n1p2 /mnt/boot
    
    mkdir /mnt/boot/EFI
-   mount /dev/nvme0n1p1 /mnt
+   mount /dev/nvme0n1p1 /mnt/boot/EFI
+   
+   //Examine
+   lsblk
    ```
 
 5. Install the base packages
@@ -103,8 +103,8 @@
 9. Localization
 
    ``` 
-   vim /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
-   locale-gen
+   # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
+   # locale-gen
    ```
 
    ```
@@ -113,18 +113,18 @@
 
 10. Network configuration
 
-    ```
-    echo eit-pc >> /etc/hostname
-    ```
+  ```
+  echo eit-pc >> /etc/hostname
+  ```
 
-    ```
-    vi /etc/hosts
-    
-    127.0.0.1    localhost
-    ::1		    localhost
-    127.0.1.1	eit-pc.localdomain	eit-pc
-    
-    ```
+  ```
+  vi /etc/hosts
+  
+  127.0.0.1    localhost
+  ::1		    localhost
+  127.0.1.1	eit-pc.localdomain	eit-pc
+  
+  ```
 
 11. Initramfs
 
@@ -141,9 +141,8 @@
 13. Add user
 
     ```
-    # useradd -m -g users eit0
+    # useradd -m -g -G wheel eit0
     # passwd eit0
-    # nano /etc/sudoers  ==> 添加 "eit0 ALL=(ALL) ALL" 
     ```
 
 14. Boot loader
@@ -153,7 +152,7 @@
     # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
     # grub-mkconfig -o /boot/grub/grub.cfg
     
-    这里可以与 "/mnt/etc/fstab" 对下,可能导致系统启动不了.
+    这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
     ```
 
 15. Reboot
@@ -164,38 +163,30 @@
     # reboot
     ```
 
-16. connect net
+16. i3
 
     ```
-    $ sudo ip link
-    $ sudo ip link set ens33 up
-    $ sudo dhcpcd ens33
-    ```
-
-17. vmtools
-
-    ```
-    pacman -S xorg-server xorg-xinit
-    pacman -S zsh xfce4-terminal feh compton i3-gaps
-    useradd -m -g users -G wheel -s /bin/zsh username
-    su username
-    sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
+    $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
+    $ sudo pacman -S xorg-server xorg-xinit
+    $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
+    $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
+    $ sudo pacman -S i3  {3..5}
+    $ sudo chsh -s /bin/zsh
     
-    在.xinitrc添加如下内容
-    exec compton -b &
-    exec fcitx &                                     
-    exec i3 -V >> ~/.config/i3/log/i3log-$(date +'%F-%k-%M-%S') 2>&1
+    在.xinitrc添加如下内容                                   
+    exec i3
     重启后startx进入图形界面
     ```
 
-
+17. fonts
 
     ```
-    $ sudo pacman -S xf86-video-vmware
-    $ sudo pacman -S xorg-server xorg-xinit 
-    $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
+    $ sudo pacman -S firefox
+    $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
+    $ sudo chmod 444  /usr/share/fonts/xxx.ttf
     ```
-    
+
+18. vm-tools
     ```
     点击虚拟机的安装wm-tools
     
@@ -208,4 +199,18 @@
     $ ls
     $ sudo for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
     $ sudo ./vmware-install.pl
+    
+    $ sudo pacman -S aps
+    $ asp checkout open-vm-tools
+    $ cd open-vm-tools/repos/community-x86_64/
+    $ makepkg -s --asdeps
+    # cp vm* /usr/lib/systemd/system
+    # systemctl enable vmware-vmblock-fuse.service
+    # systemctl enable vmtoolsd.service
+    
+    # reboot
+    
+    # /etc/init.d/rc6.d/K99vmware-tools start
     ```
+
+
