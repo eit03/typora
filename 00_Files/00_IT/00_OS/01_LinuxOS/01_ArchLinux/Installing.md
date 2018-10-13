@@ -1,13 +1,16 @@
-1. Verify the boot mode
+1. 添加好虚拟机,设置固件类型为UEFI(vmware中可在指定虚拟机的设置->选项->高级-> 固件类型中设置模式).
 
-   ```
-   ls /sys/firmware/efi/efivars
-   
-   如果目录存在,是UFI引导模式;否,BIOS模式.
-   vmware中可在指定虚拟机的设置->选项->高级-> 固件类型中设置模式.
-   ```
+2. 启动archlinux,设置全屏为自动适应客户机(编辑->显示->全屏).
 
-2. Connect to the Internet
+3. Verify the boot mode
+
+    ```
+    ls /sys/firmware/efi/efivars
+    
+    如果目录存在,是UFI引导模式;否,BIOS模式.
+    ```
+
+4. Connect to the Internet
 
    ```
    # ping www.baidu.com
@@ -18,7 +21,7 @@
    # dhcpcd ens33
    ```
 
-3. Update mirrorlist
+5. Update mirrorlist
 
    ```
    pacman -Sy
@@ -26,7 +29,7 @@
    reflector --verbose -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist
    ```
 
-4. Partition the disks
+6. Partition the disks
 
    ```
    //找到自己的硬盘设备/dev/nvme0n1
@@ -74,139 +77,143 @@
    lsblk
    ```
 
-5. Install the base packages
+7. Install the base packages
 
    ```
    pacstrap /mnt base base-devel net-tools linux-headers
    ```
 
-6. Fstab
+8. Fstab
 
    ```
    genfstab -U /mnt >> /mnt/etc/fstab
    ```
 
-7. Chroot
+9. Chroot
 
    ```
    arch-chroot /mnt
    ```
 
-8. Time zone
-
-   ```
-   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-   hwclock --systohc
-   date
-   ```
-
-9. Localization
-
-   ``` 
-   # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
-   # locale-gen
-   ```
-   ```
-   echo LANG=en_US.UTF-8 >> /etc/locale.conf
-   ```
-
-10. Network configuration
-    ```
-    echo eit-pc >> /etc/hostname
-    ```
-    ```
-    vi /etc/hosts
-    
-    127.0.0.1    localhost
-    ::1		    localhost
-    127.0.1.1	eit-pc.localdomain	eit-pc
-    ```
-
-11. Initramfs
+10. Time zone
 
     ```
-    # mkinitcpio -p linux
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    vi /etc/localtime ==>CST-8 ==> CST-0
+    hwclock --systohc
+    date
     ```
 
-12. Root password
+11. Localization
 
-    ```
-    # passwd
-    ```
+     ``` 
+     # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
+     # locale-gen
+     ```
+     ```
+     echo LANG=en_US.UTF-8 >> /etc/locale.conf
+     ```
 
-13. Add user
+12. Network configuration
+     ```
+     echo eit-pc >> /etc/hostname
+     ```
+     ```
+     vi /etc/hosts
+     
+     127.0.0.1    localhost
+     ::1		    localhost
+     127.0.1.1	eit-pc.localdomain	eit-pc
+     ```
 
-    ```
-    # useradd -m -g -G wheel eit0
-    # passwd eit0
-    ```
+13. Initramfs
 
-14. Boot loader
+     ```
+     # mkinitcpio -p linux
+     ```
 
-    ```
-    # pacman -S grub efibootmgr
-    # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
-    # grub-mkconfig -o /boot/grub/grub.cfg
-    
-    这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
-    ```
+14. Root password
 
-15. Reboot
+     ```
+     # passwd
+     ```
 
-    ```
-    # exit
-    # umount -R /mnt
-    # reboot
-    ```
+15. Add user
 
-16. i3
+     ```
+     # useradd -m -G wheel eit0
+     # passwd eit0
+     
+     // remember to open sudo privillige for wheel group in /etc/sudoers
+     ```
 
-    ```
-    $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
-    $ sudo pacman -S xorg-server xorg-xinit
-    $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
-    $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
-    $ sudo pacman -S i3  {3..5}
-    $ sudo chsh -s /bin/zsh
-    
-    在.xinitrc添加如下内容                                   
-    exec i3
-    重启后startx进入图形界面
-    ```
+16. Boot loader
 
-17. fonts
+     ```
+     # pacman -S grub efibootmgr
+     # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
+     # grub-mkconfig -o /boot/grub/grub.cfg
+     
+     这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
+     ```
 
-    ```
-    $ sudo pacman -S firefox
-    $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
-    $ sudo chmod 444  /usr/share/fonts/xxx.ttf
-    ```
+17. Reboot
 
-18. vm-tools
-    ```
-    点击虚拟机的安装wm-tools
-    
-    $ mkdir /mnt/vm-tools/
-    $ sudo mount /dev/cdrom/ /mnt/vm-tools/
-    $ ls /mnt/vm-tools/
-    $ tar -zxvf /mnt/vm-tools/VMwareTools.tar.gz
-    $ pwd
-    $ cd vmware-tools-distrib
-    $ ls
-    $ sudo for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
-    $ sudo ./vmware-install.pl
-    
-    $ sudo pacman -S aps
-    $ asp checkout open-vm-tools
-    $ cd open-vm-tools/repos/community-x86_64/
-    $ makepkg -s --asdeps
-    # cp vm* /usr/lib/systemd/system
-    # systemctl enable vmware-vmblock-fuse.service
-    # systemctl enable vmtoolsd.service
-    
-    # reboot
-    
-    # /etc/init.d/rc6.d/K99vmware-tools start
-    ```
+     ```
+     # exit
+     # umount -R /mnt
+     # reboot
+     ```
+
+18. i3
+
+     ```
+     $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
+     $ sudo pacman -S xorg-server xorg-xinit
+     $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
+     $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
+     $ sudo pacman -S i3  {3..5}
+     $ sudo chsh -s /bin/zsh
+     
+     在.xinitrc添加如下内容                                   
+     exec i3
+     重启后startx进入图形界面
+     ```
+
+19. fonts
+
+     ```
+     $ sudo pacman -S wqy-zenhei ttf-fireflysung
+     $ sudo pacman -S firefox
+     $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
+     $ sudo chmod 444  /usr/share/fonts/xxx.ttf
+     ```
+
+20. vm-tools
+     ```
+     点击虚拟机的安装wm-tools
+     
+     $ sudo mkdir /mnt/vm-tools/
+     $ sudo mount /dev/cdrom/ /mnt/vm-tools/
+     $ ls /mnt/vm-tools/
+     $ tar -zxvf /mnt/vm-tools/VMwareTools.tar.gz
+     $ pwd
+     $ cd vmware-tools-distrib
+     $ ls
+     $ sudo for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
+     $ sudo ./vmware-install.pl
+     
+     $ sudo pacman -S asp
+     $ asp checkout open-vm-tools
+     $ cd open-vm-tools/repos/community-x86_64/
+     $ makepkg -s --asdeps
+     # cp vm* /usr/lib/systemd/system
+     # systemctl enable vmware-vmblock-fuse.service
+     # systemctl enable vmtoolsd.service
+     
+     # reboot
+     
+     # /etc/init.d/rc6.d/K99vmware-tools start
+     ```
 
 
