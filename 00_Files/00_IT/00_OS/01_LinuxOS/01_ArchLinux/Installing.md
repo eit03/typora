@@ -95,125 +95,125 @@
    arch-chroot /mnt
    ```
 
-10. Time zone
+10. Localization
 
-    ```
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    vi /etc/localtime ==>CST-8 ==> CST-0
-    hwclock --systohc
-    date
-    ```
+      ``` 
+      # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
+      # locale-gen
+      ```
+      ```
+      echo LANG=en_US.UTF-8 >> /etc/locale.conf
+      ```
 
-11. Localization
+11. Time zone
 
-     ``` 
-     # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
-     # locale-gen
      ```
-     ```
-     echo LANG=en_US.UTF-8 >> /etc/locale.conf
+     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+     vi /etc/localtime ==>CST-8 ==> CST-0
+     hwclock --systohc
+     date
      ```
 
 12. Network configuration
-     ```
-     echo eit-pc >> /etc/hostname
-     ```
-     ```
-     vi /etc/hosts
-     
-     127.0.0.1    localhost
-     ::1		    localhost
-     127.0.1.1	eit-pc.localdomain	eit-pc
-     ```
+       ```
+       echo eit-pc >> /etc/hostname
+       ```
+       ```
+       vi /etc/hosts
+       
+       127.0.0.1    localhost
+       ::1		    localhost
+       127.0.1.1	eit-pc.localdomain	eit-pc
+       ```
 
 13. Initramfs
 
-     ```
-     # mkinitcpio -p linux
-     ```
+       ```
+       # mkinitcpio -p linux
+       ```
 
 14. Root password
 
-     ```
-     # passwd
-     ```
+       ```
+       # passwd
+       ```
 
 15. Add user
 
-     ```
-     # useradd -m -G wheel eit0
-     # passwd eit0
-     
-     // remember to open sudo privillige for wheel group in /etc/sudoers
-     ```
+       ```
+       # useradd -m -G wheel eit0
+       # passwd eit0
+       
+       // remember to open sudo privillige for wheel group in /etc/sudoers
+       ```
 
 16. Boot loader
 
-     ```
-     # pacman -S grub efibootmgr
-     # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
-     # grub-mkconfig -o /boot/grub/grub.cfg
-     
-     这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
-     ```
+       ```
+       # pacman -S grub efibootmgr
+       # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
+       # grub-mkconfig -o /boot/grub/grub.cfg
+       
+       这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
+       ```
 
 17. Reboot
 
-     ```
-     # exit
-     # umount -R /mnt
-     # reboot
-     ```
+       ```
+       # exit
+       # umount -R /mnt
+       # reboot
+       ```
 
 18. i3
 
-     ```
-     $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
-     $ sudo pacman -S xorg-server xorg-xinit
-     $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
-     $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
-     $ sudo pacman -S i3  {3..5}
-     $ sudo chsh -s /bin/zsh
-     
-     在.xinitrc添加如下内容                                   
-     exec i3
-     重启后startx进入图形界面
-     ```
+       ```
+       $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
+       $ sudo pacman -S xorg-server xorg-xinit
+       $ sudo pacman -S zsh xfce4-terminal feh compton i3-gaps
+       $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
+       $ sudo pacman -S i3  {3..5}
+       $ sudo chsh -s /bin/zsh
+       
+       在.xinitrc添加如下内容                                   
+       exec i3
+       重启后startx进入图形界面
+       ```
 
 19. fonts
 
-     ```
-     $ sudo pacman -S wqy-zenhei ttf-fireflysung
-     $ sudo pacman -S firefox
-     $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
-     $ sudo chmod 444  /usr/share/fonts/xxx.ttf
-     ```
+       ```
+       $ sudo pacman -S wqy-zenhei ttf-fireflysung
+       $ sudo pacman -S firefox
+       $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
+       $ sudo chmod 444  /usr/share/fonts/xxx.ttf
+       ```
 
 20. vm-tools
-     ```
-     点击虚拟机的安装wm-tools
-     
-     $ sudo mkdir /mnt/vm-tools/
-     $ sudo mount /dev/cdrom/ /mnt/vm-tools/
-     $ ls /mnt/vm-tools/
-     $ tar -zxvf /mnt/vm-tools/VMwareTools.tar.gz
-     $ pwd
-     $ cd vmware-tools-distrib
-     $ ls
-     $ sudo for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
-     $ sudo ./vmware-install.pl
-     
-     $ sudo pacman -S asp
-     $ asp checkout open-vm-tools
-     $ cd open-vm-tools/repos/community-x86_64/
-     $ makepkg -s --asdeps
-     # cp vm* /usr/lib/systemd/system
-     # systemctl enable vmware-vmblock-fuse.service
-     # systemctl enable vmtoolsd.service
-     
-     # reboot
-     
-     # /etc/init.d/rc6.d/K99vmware-tools start
-     ```
+       ```
+       点击虚拟机的安装wm-tools
+       
+       $ sudo mkdir /mnt/vm-tools/
+       $ sudo mount /dev/cdrom/ /mnt/vm-tools/
+       $ ls /mnt/vm-tools/
+       $ tar -zxvf /mnt/vm-tools/VMwareTools.tar.gz
+       $ pwd
+       $ cd vmware-tools-distrib
+       $ ls
+       $ sudo for x in {0..6}; do mkdir -p /etc/init.d/rc${x}.d; done
+       $ sudo ./vmware-install.pl
+       
+       $ sudo pacman -S asp
+       $ asp checkout open-vm-tools
+       $ cd open-vm-tools/repos/community-x86_64/
+       $ makepkg -s --asdeps
+       # cp vm* /usr/lib/systemd/system
+       # systemctl enable vmware-vmblock-fuse.service
+       # systemctl enable vmtoolsd.service
+       
+       # reboot
+       
+       # /etc/init.d/rc6.d/K99vmware-tools start
+       ```
 
 

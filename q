@@ -1,179 +1,796 @@
-[33mcommit cb61ac7667aa8c359edd4539d7e78d7941dc7b0b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
-Author: eit90123 <760390101@qq.com>
-Date:   Mon Sep 10 09:15:18 2018 +0800
+***
+`Version:` 5.11.1
+`Declaration:`
+`Defination:`
+`Reference:`
+`Keyword:` \[\]
+***
+[TOC]
+***
 
-    #
 
-[33mcommit 81aebd7d39b728a7614fe0dcd3c7065e33cfa3a7[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Sep 8 16:29:08 2018 +0800
 
-    #
+# `Brief Introduction`
 
-[33mcommit cdc63eaac5760736c7d9f38ba535410962bcbf0e[m
-Author: eit90123 <760390101@qq.com>
-Date:   Fri Sep 7 21:53:38 2018 +0800
 
-    #
 
-[33mcommit 60be883df591ada10d9958ba2871fb483b6e7351[m
-Author: eit90123 <760390101@qq.com>
-Date:   Fri Sep 7 21:25:38 2018 +0800
+# `Detailed Description`
 
-    #
 
-[33mcommit eaecff16ad731b1208367b5e21ec3481ce8c1b63[m
-Author: eit90123 <760390101@qq.com>
-Date:   Tue Aug 28 22:21:23 2018 +0800
 
-    #
+# `Data Struct`
+## `Type Declaration`
+```
+class Q_CORE_EXPORT QString
+{
+//Prepare *** *** *** *** *** *** *** *** *** *** *** *** **
 
-[33mcommit facf3a9e70eb6a428b7bda5fa76de24281105310[m
-Author: eit90123 <760390101@qq.com>
-Date:   Tue Aug 28 22:16:40 2018 +0800
+//Properties *** *** *** *** *** *** *** *** *** *** *** ***
 
-    #
+//Constructor *** *** *** *** *** *** *** *** *** *** *** **
 
-[33mcommit 554c6640c1114b9b93e56d4b40f07cc01024bad6[m
-Author: eit90123 <760390101@qq.com>
-Date:   Tue Aug 28 22:14:09 2018 +0800
+//Functions *** *** *** *** *** *** *** *** *** *** ***  ***
 
-    #
+}
+```
+## `Constructor`
+```
 
-[33mcommit 5a73ad44c741f209fca343f05173ed4f29d1ae64[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 17:19:04 2018 +0800
+```
+## `Memory Model`
+```
 
-    #
+```
 
-[33mcommit 43a0070677d90fea7f0b9c5673907ad09a4a7d61[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 17:11:09 2018 +0800
 
-    #
 
-[33mcommit fa79476e9e9bed3a9e94896c774fc91daa595329[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 17:10:51 2018 +0800
+# `4. Properties`
+###### `4.1. acceptDrops : bool`
 
-    1
+`Interpretation:`
 
-[33mcommit f908ad886a7384f9a5247f2af28bdd1f19eb38da[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 16:59:25 2018 +0800
 
-    #
+`StorePosition:`
+`Defualt:`
+`Access:`
+`Remark:`
+`Eg 0:`
 
-[33mcommit 50f1a7baf74b8c729b6b2342b7427dcd0f599d6e[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 15:48:23 2018 +0800
+###### ` accessibleDescription : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` accessibleName : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` autoFillBackground : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` baseSize : QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` childrenRect : const QRect`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` childrenRegion : const QRegion`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` contextMenuPolicy : Qt::ContextMenuPolicy`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` cursor : QCursor`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` enabled : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` focus : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` focusPolicy : Qt::FocusPolicy`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` font : QFont`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` frameGeometry : const QRect`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` frameSize : const QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` fullScreen : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` geometry : QRect`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` height : const int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` inputMethodHints : Qt::InputMethodHints`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` isActiveWindow : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` layoutDirection : Qt::LayoutDirection`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` locale : QLocale`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` maximized : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` maximumHeight : int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` maximumSize : QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` maximumWidth : int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` minimized : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` minimumHeight : int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` minimumSize : QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` minimumSizeHint : const QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` `
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` minimumWidth : int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` modal : const bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` mouseTracking : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` normalGeometry : const QRect`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` palette : QPalette`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` pos : QPoint`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` rect : const QRect`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` size : QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` sizeHint : const QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` sizeIncrement : QSize`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` sizePolicy : QSizePolicy`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` statusTip : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` styleSheet : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` tabletTracking : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` toolTip : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` toolTipDuration : int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` updatesEnabled : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` visible : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` whatsThis : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` width : const int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowFilePath : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowFlags : Qt::WindowFlags`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowIcon : QIcon`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowModality : Qt::WindowModality`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowModified : bool`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowOpacity : double`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` windowTitle : QString`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` x : const int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
+###### ` y : const int`
+- Interpretation:
+- StorePosition:
+- Defualt:
+- Access:
+- Remark:
+- Eg 0:
 
-    1
 
-[33mcommit fd560f11e63894b2f4f68b52cc95acc8434d7677[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 15:41:00 2018 +0800
 
-    1
+# `Public Types`
+###### `enum RenderFlag { DrawWindowBackground, DrawChildren, IgnoreMask }`
+###### `flags RenderFlags`
 
-[33mcommit a9172ba4c20393ee819eca7ffd7bc2e26b9983a4[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sat Aug 25 15:39:30 2018 +0800
 
-    1
 
-[33mcommit 21ec05ac86f64cf18cf5368b8aadbc4ef4bc7a47[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 23:23:58 2018 +0800
+# `Public Functions`
+###### ` QWidget(QWidget* parent = nullptr, Qt::WindowFlags f = ...)`
+###### `virtual ~QWidget()`
+###### `bool acceptDrops() const`
+###### `QString accessibleDescription() const`
+###### `QString accessibleName() const`
+###### `QList<QAction*> actions() const`
+###### `void activateWindow()`
+###### `void addAction(QAction* action)`
+###### `void addActions(QList<QAction*> actions)`
+###### `void adjustSize()`
+###### `bool autoFillBackground() const`
+###### `QPalette::ColorRole backgroundRole() const`
+###### `QBackingStore* backingStore() const`
+###### `QSize baseSize() const`
+###### `QWidget* childAt(int x, int y) const`
+###### `QWidget* childAt(const QPoint &p) const`
+###### `QRect childrenRect() const`
+###### `QRegion childrenRegion() const`
+###### `void clearFocus()`
+###### `void clearMask()`
+###### `QMargins contentsMargins() const`
+###### `QRect contentsRect() const`
+###### `Qt::ContextMenuPolicy contextMenuPolicy() const`
+###### `QCursor cursor() const`
+###### `WId effectiveWinId() const`
+###### `void ensurePolished() const`
+###### `Qt::FocusPolicy focusPolicy() const`
+###### `QWidget* focusProxy() const`
+###### `QWidget* focusWidget() const`
+###### `const QFont & font() const`
+###### `QFontInfo fontInfo() const`
+###### `QFontMetrics fontMetrics() const`
+###### `QPalette::ColorRole foregroundRole() const`
+###### `QRect frameGeometry() const`
+###### `QSize frameSize() const`
+###### `const QRect & geometry() const`
+###### `void getContentsMargins(int* left, int* top, int* right, int* bottom) const`
+###### `QPixmap grab(const QRect &rectangle = QRect(QPoint(0, 0), QSize(-1, -1)))`
+###### `void grabGesture(Qt::GestureType gesture, Qt::GestureFlags flags = ...)`
+###### `void grabKeyboard()`
+###### `void grabMouse()`
+###### `void grabMouse(const QCursor &cursor)`
+###### `int grabShortcut(const QKeySequence &key, Qt::ShortcutContext context = Qt::WindowShortcut)`
+###### `QGraphicsEffect* graphicsEffect() const`
+###### `QGraphicsProxyWidget* graphicsProxyWidget() const`
+###### `bool hasEditFocus() const`
+###### `bool hasFocus() const`
+###### `virtual bool hasHeightForWidth() const`
+###### `bool hasMouseTracking() const`
+###### `bool hasTabletTracking() const`
+###### `int height() const`
+###### `virtual int heightForWidth(int w) const`
+###### `Qt::InputMethodHints inputMethodHints() const`
+###### `virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const`
+###### `void insertAction(QAction* before, QAction* action)`
+###### `void insertActions(QAction* before, QList<QAction*> actions)`
+###### `bool isActiveWindow() const`
+###### `bool isAncestorOf(const QWidget* child) const`
+###### `bool isEnabled() const`
+###### `bool isEnabledTo(const QWidget* ancestor) const`
+###### `bool isFullScreen() const`
+###### `bool isHidden() const`
+###### `bool isMaximized() const`
+###### `bool isMinimized() const`
+###### `bool isModal() const`
+###### `bool isVisible() const`
+###### `bool isVisibleTo(const QWidget* ancestor) const`
+###### `bool isWindow() const`
+###### `bool isWindowModified() const`
+###### `QLayout* layout() const`
+###### `Qt::LayoutDirection layoutDirection() const`
+###### `QLocale locale() const`
+###### `QPoint mapFrom(const QWidget* parent, const QPoint &pos) const`
+###### `QPoint mapFromGlobal(const QPoint &pos) const`
+###### `QPoint mapFromParent(const QPoint &pos) const`
+###### `QPoint mapTo(const QWidget* parent, const QPoint &pos) const`
+###### `QPoint mapToGlobal(const QPoint &pos) const`
+###### `QPoint mapToParent(const QPoint &pos) const`
+###### `QRegion mask() const`
+###### `int maximumHeight() const`
+###### `QSize maximumSize() const`
+###### `int maximumWidth() const`
+###### `int minimumHeight() const`
+###### `QSize minimumSize() const`
+###### `virtual QSize minimumSizeHint() const`
+###### `int minimumWidth() const`
+###### `void move(const QPoint &)`
+###### `void move(int x, int y)`
+###### `QWidget* nativeParentWidget() const`
+###### `QWidget* nextInFocusChain() const`
+###### `QRect normalGeometry() const`
+###### `void overrideWindowFlags(Qt::WindowFlags flags)`
+###### `const QPalette & palette() const`
+###### `QWidget* parentWidget() const`
+###### `QPoint pos() const`
+###### `QWidget* previousInFocusChain() const`
+###### `QRect rect() const`
+###### `void releaseKeyboard()`
+###### `void releaseMouse()`
+###### `void releaseShortcut(int id)`
+###### `void removeAction(QAction* action)`
+###### `void render(QPaintDevice* target, const QPoint &targetOffset = QPoint(), const QRegion &sourceRegion = QRegion(), QWidget::RenderFlags renderFlags = ...)`
+###### `void render(QPainter* painter, const QPoint &targetOffset = QPoint(), const QRegion &sourceRegion = QRegion(), QWidget::RenderFlags renderFlags = ...)`
+###### `void repaint(int x, int y, int w, int h)`
+###### `void repaint(const QRect &rect)`
+###### `void repaint(const QRegion &rgn)`
+###### `void resize(const QSize &)`
+###### `void resize(int w, int h)`
+###### `bool restoreGeometry(const QByteArray &geometry)`
+###### `QByteArray saveGeometry() const`
+###### `void scroll(int dx, int dy)`
+###### `void scroll(int dx, int dy, const QRect &r)`
+###### `void setAcceptDrops(bool on)`
+###### `void setAccessibleDescription(const QString &description)`
+###### `void setAccessibleName(const QString &name)`
+###### `void setAttribute(Qt::WidgetAttribute attribute, bool on = true)`
+###### `void setAutoFillBackground(bool enabled)`
+###### `void setBackgroundRole(QPalette::ColorRole role)`
+###### `void setBaseSize(const QSize &)`
+###### `void setBaseSize(int basew, int baseh)`
+###### `void setContentsMargins(int left, int top, int right, int bottom)`
+###### `void setContentsMargins(const QMargins &margins)`
+###### `void setContextMenuPolicy(Qt::ContextMenuPolicy policy)`
+###### `void setCursor(const QCursor &)`
+###### `void setEditFocus(bool enable)`
+###### `void setFixedHeight(int h)`
+###### `void setFixedSize(const QSize &s)`
+###### `void setFixedSize(int w, int h)`
+###### `void setFixedWidth(int w)`
+###### `void setFocus(Qt::FocusReason reason)`
+###### `void setFocusPolicy(Qt::FocusPolicy policy)`
+###### `void setFocusProxy(QWidget* w)`
+###### `void setFont(const QFont &)`
+###### `void setForegroundRole(QPalette::ColorRole role)`
+###### `void setGeometry(const QRect &)`
+###### `void setGeometry(int x, int y, int w, int h)`
+###### `void setGraphicsEffect(QGraphicsEffect* effect)`
+###### `void setInputMethodHints(Qt::InputMethodHints hints)`
+###### `void setLayout(QLayout* layout)`
+###### `void setLayoutDirection(Qt::LayoutDirection direction)`
+###### `void setLocale(const QLocale &locale)`
+###### `void setMask(const QBitmap &bitmap)`
+###### `void setMask(const QRegion &region)`
+###### `void setMaximumHeight(int maxh)`
+###### `void setMaximumSize(const QSize &)`
+###### `void setMaximumSize(int maxw, int maxh)`
+###### `void setMaximumWidth(int maxw)`
+###### `void setMinimumHeight(int minh)`
+###### `void setMinimumSize(const QSize &)`
+###### `void setMinimumSize(int minw, int minh)`
+###### `void setMinimumWidth(int minw)`
+###### `void setMouseTracking(bool enable)`
+###### `void setPalette(const QPalette &)`
+###### `void setParent(QWidget* parent)`
+###### `void setParent(QWidget* parent, Qt::WindowFlags f)`
+###### `void setShortcutAutoRepeat(int id, bool enable = true)`
+###### `void setShortcutEnabled(int id, bool enable = true)`
+###### `void setSizeIncrement(const QSize &)`
+###### `void setSizeIncrement(int w, int h)`
+###### `void setSizePolicy(QSizePolicy)`
+###### `void setSizePolicy(QSizePolicy::Policy horizontal, QSizePolicy::Policy vertical)`
+###### `void setStatusTip(const QString &)`
+###### `void setStyle(QStyle* style)`
+###### `void setTabletTracking(bool enable)`
+###### `void setToolTip(const QString &)`
+###### `void setToolTipDuration(int msec)`
+###### `void setUpdatesEnabled(bool enable)`
+###### `void setWhatsThis(const QString &)`
+###### `void setWindowFilePath(const QString &filePath)`
+###### `void setWindowFlag(Qt::WindowType flag, bool on = true)`
+###### `void setWindowFlags(Qt::WindowFlags type)`
+###### `void setWindowIcon(const QIcon &icon)`
+###### `void setWindowModality(Qt::WindowModality windowModality)`
+###### `void setWindowOpacity(qreal level)`
+###### `void setWindowRole(const QString &role)`
+###### `void setWindowState(Qt::WindowStates windowState)`
+###### `void setupUi(QWidget* widget)`
+###### `QSize size() const`
+###### `virtual QSize sizeHint() const`
+###### `QSize sizeIncrement() const`
+###### `QSizePolicy sizePolicy() const`
+###### `void stackUnder(QWidget* w)`
+###### `QString statusTip() const`
+###### `QStyle* style() const`
+###### `QString styleSheet() const`
+###### `bool testAttribute(Qt::WidgetAttribute attribute) const`
+###### `QString toolTip() const`
+###### `int toolTipDuration() const`
+###### `bool underMouse() const`
+###### `void ungrabGesture(Qt::GestureType gesture)`
+###### `void unsetCursor()`
+###### `void unsetLayoutDirection()`
+###### `void unsetLocale()`
+###### `void update(int x, int y, int w, int h)`
+###### `void update(const QRect &rect)`
+###### `void update(const QRegion &rgn)`
+###### `void updateGeometry()`
+###### `bool updatesEnabled() const`
+###### `QRegion visibleRegion() const`
+###### `QString whatsThis() const`
+###### `int width() const`
+###### `WId winId() const`
+###### `QWidget* window() const`
+###### `QString windowFilePath() const`
+###### `Qt::WindowFlags windowFlags() const`
+###### `QWindow* windowHandle() const`
+###### `QIcon windowIcon() const`
+###### `Qt::WindowModality windowModality() const`
+###### `qreal windowOpacity() const`
+###### `QString windowRole() const`
+###### `Qt::WindowStates windowState() const`
+###### `QString windowTitle() const`
+###### `Qt::WindowType windowType() const`
+###### `int x() const`
+###### `int y() const`
 
-    1
 
-[33mcommit 8147d90a4ff39a6a645e33d55235da01c1082077[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:49:14 2018 +0800
 
-    1
+# `Reimplemented Public Functions`
+###### `virtual QPaintEngine* paintEngine() const override`
 
-[33mcommit b22362d10ef08a1ce63bbfe80aeaee56698a9f00[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:33:03 2018 +0800
 
-    1
 
-[33mcommit e5aa0bb3693860b8ab1ff1078dfa8315ad0db1e8[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:29:49 2018 +0800
+# `Public Slots`
+###### `bool close()`
+###### `void hide()`
+###### `void lower()`
+###### `void raise()`
+###### `void repaint()`
+###### `void setDisabled(bool disable)`
+###### `void setEnabled(bool)`
+###### `void setFocus()`
+###### `void setHidden(bool hidden)`
+###### `void setStyleSheet(const QString &styleSheet)`
+###### `virtual void setVisible(bool visible)`
+###### `void setWindowModified(bool)`
+###### `void setWindowTitle(const QString &)`
+###### `void show()`
+###### `void showFullScreen()`
+###### `void showMaximized()`
+###### `void showMinimized()`
+###### `void showNormal()`
+###### `void update()`
 
-    1
 
-[33mcommit 20a15296992af0acef38fe194d4958784a84c15a[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:24:44 2018 +0800
 
-    1
+# `Static Public Members`
+###### `QWidget* createWindowContainer(QWindow* window, QWidget* parent = nullptr, Qt::WindowFlags flags = ...)`
+###### `QWidget* find(WId id)`
+###### `QWidget* keyboardGrabber()`
+###### `QWidget* mouseGrabber()`
+###### `void setTabOrder(QWidget* first, QWidget* second)`
 
-[33mcommit 8e94bbdec776c515b0ba3bf0a4439d476e43a1c8[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:16:09 2018 +0800
 
-    1
 
-[33mcommit d21c633ef3b1a42635f5c06617d4fbab520872a8[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:12:40 2018 +0800
+# `Protected Functions`
+###### `virtual void actionEvent(QActionEvent* event)`
+###### `virtual void changeEvent(QEvent* event)`
+###### `virtual void closeEvent(QCloseEvent* event)`
+###### `virtual void contextMenuEvent(QContextMenuEvent* event)`
+###### `void create(WId window = 0, bool initializeWindow = true, bool destroyOldWindow = true)`
+###### `void destroy(bool destroyWindow = true, bool destroySubWindows = true)`
+###### `virtual void dragEnterEvent(QDragEnterEvent* event)`
+###### `virtual void dragLeaveEvent(QDragLeaveEvent* event)`
+###### `virtual void dragMoveEvent(QDragMoveEvent* event)`
+###### `virtual void dropEvent(QDropEvent* event)`
+###### `virtual void enterEvent(QEvent* event)`
+###### `virtual void focusInEvent(QFocusEvent* event)`
+###### `bool focusNextChild()`
+###### `virtual bool focusNextPrevChild(bool next)`
+###### `virtual void focusOutEvent(QFocusEvent* event)`
+###### `bool focusPreviousChild()`
+###### `virtual void hideEvent(QHideEvent* event)`
+###### `virtual void inputMethodEvent(QInputMethodEvent* event)`
+###### `virtual void keyPressEvent(QKeyEvent* event)`
+###### `virtual void keyReleaseEvent(QKeyEvent* event)`
+###### `virtual void leaveEvent(QEvent* event)`
+###### `virtual void mouseDoubleClickEvent(QMouseEvent* event)`
+###### `virtual void mouseMoveEvent(QMouseEvent* event)`
+###### `virtual void mousePressEvent(QMouseEvent* event)`
+###### `virtual void mouseReleaseEvent(QMouseEvent* event)`
+###### `virtual void moveEvent(QMoveEvent* event)`
+###### `virtual bool nativeEvent(const QByteArray &eventType, void* message, long* result)`
+###### `virtual void paintEvent(QPaintEvent* event)`
+###### `virtual void resizeEvent(QResizeEvent* event)`
+###### `virtual void showEvent(QShowEvent* event)`
+###### `virtual void tabletEvent(QTabletEvent* event)`
+###### `virtual void wheelEvent(QWheelEvent* event)`
 
-    1
 
-[33mcommit 592b68b8d66f237e60a1a598bbd7cd6658ab9609[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:10:48 2018 +0800
 
-    1
+# `Reimplemented Protected Functions`
 
-[33mcommit 8046bc2188d95ffff6d1e3d8c25a37532451a1e8[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:09:23 2018 +0800
+###### `virtual bool event(QEvent* event) override`
+###### `virtual void initPainter(QPainter* painter) const override`
+###### `virtual int metric(QPaintDevice::PaintDeviceMetric m) const override`
 
-    1
 
-[33mcommit 13c709957b751efdce58f42c58c16800d35b81f9[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:06:10 2018 +0800
 
-    1
+# `Protected Slots`
+###### `void updateMicroFocus()`
 
-[33mcommit f233f7179d3b7d3ac4ddc9cfe97373ad551b2c95[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 22:01:36 2018 +0800
 
-    1
 
-[33mcommit 1a3a827299406b38b047c8e62cd517f855f9f64e[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 19:07:04 2018 +0800
+# `Signals`
+###### `void customContextMenuRequested(const QPoint &pos)`
+###### `void windowIconChanged(const QIcon &icon)`
+###### `void windowTitleChanged(const QString &title)`
 
-    1
 
-[33mcommit d8d514a43acc009c03d0734c67401840199c48dc[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 19:05:46 2018 +0800
 
-    1
+# `Macros`
+###### ` QWIDGETSIZE_MAX`
 
-[33mcommit bf1b5e2bd76c5b521dc14342de6a856ed750e2c3[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 19:03:55 2018 +0800
 
-    1
-
-[33mcommit d2f25f9814a35992fc1c56dd3302ea4101db6e42[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 10:54:03 2018 +0800
-
-    1
-
-[33mcommit b1b8ac6176b8da948313aeb6c86f89b33e5c33c7[m
-Author: eit90123 <760390101@qq.com>
-Date:   Sun Aug 19 10:38:54 2018 +0800
-
-    1
