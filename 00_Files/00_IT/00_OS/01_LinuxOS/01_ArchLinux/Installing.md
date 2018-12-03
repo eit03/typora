@@ -1,23 +1,21 @@
 ***
-[TOC]
+[toc]
 ***
 
-# `1. Config archlinux virtual machine`
+# `1. 设置固件类型` 
+添加好虚拟机,设置固件类型为UEFI(vmware中可在指定虚拟机的设置->选项->高级-> 固件类型中设置模式).
 
-1. 设置固件类型为UEFI(vmware中可在指定虚拟机的设置->选项->高级-> 固件类型中设置模式).
-2. IP分配问题: vmware中可在指定虚拟机的设置->硬件->网络适配器->网络->桥接,复制物理网络连接状态.
-3. 启动archlinux,设置全屏为自动适应客户机(编辑->显示->全屏).
+# `2. 设置全屏为自动适应客户机`
+启动archlinux,设置全屏为自动适应客户机(编辑->显示->全屏).
 
-# `2. Install archlinux`
-
-## `Verify the boot mode`
+# `3. Verify the boot mode`
 ```
 ls /sys/firmware/efi/efivars
 
-如果目录存在,是UEFI引导模式;否,BIOS模式.这里用UEFI模式.
+如果目录存在,是UFI引导模式;否,BIOS模式.
 ```
 
-## `Connect to the Internet`
+# `4. Connect to the Internet`
 ```
 # ping www.baidu.com
 
@@ -27,15 +25,14 @@ ls /sys/firmware/efi/efivars
 # dhcpcd ens33
 ```
 
-## `Update mirrorlist`
-
+# `5. Update mirrorlist`
 ```
 pacman -Sy
 pacman -S reflector
 reflector --verbose -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-## `Partition the disks`
+# `6. Partition the disks`
 
 ```
 //找到自己的硬盘设备/dev/nvme0n1
@@ -83,34 +80,25 @@ mount /dev/nvme0n1p1 /mnt/boot/EFI
 lsblk
 ```
 
-## `Install the base packages`
+# `7. Install the base packages`
 
 ```
 pacstrap /mnt base base-devel net-tools linux-headers
 ```
 
-## `Fstab`
+# `8. Fstab`
 
 ```
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
 
-## `Chroot`
+# `9. Chroot`
 
 ```
 arch-chroot /mnt
 ```
 
-## `Time zone`
-
-```
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-vi /etc/localtime ==>CST-8 ==> CST-0
-hwclock --systohc
-date
-```
-
-## `Localization`
+# `10. Localization`
 
 ``` 
 # vi /etc/locale.gen  ==> 删除 "en_US.UTF-8 UTF-8" "zh_CN.UTF-8 UTF-8" 前面的#号.
@@ -120,7 +108,16 @@ date
 echo LANG=en_US.UTF-8 >> /etc/locale.conf
 ```
 
-## `Network configuration`
+# `11. Time zone`
+
+```
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+vi /etc/localtime ==>CST-8 ==> CST-0
+hwclock --systohc
+date
+```
+
+# `12. Network configuration`
 ```
 echo eit-pc >> /etc/hostname
 ```
@@ -132,19 +129,19 @@ vi /etc/hosts
 127.0.1.1	eit-pc.localdomain	eit-pc
 ```
 
-## `Initramfs`
+# `13. Initramfs`
 
 ```
 # mkinitcpio -p linux
 ```
 
-## `Root password`
+# `14. Root password`
 
 ```
 # passwd
 ```
 
-## `Add user`
+# `15. Add user`
 
 ```
 # useradd -m -G wheel eit0
@@ -153,8 +150,7 @@ vi /etc/hosts
 // remember to open sudo privillige for wheel group in /etc/sudoers
 ```
 
-## `Boot loader`
-
+# `16. Boot loader`
 ```
 # pacman -S grub efibootmgr
 # grub-install --target=x86_64-efi --efi-directory=/boot/EFI --recheck
@@ -163,7 +159,7 @@ vi /etc/hosts
 这里可以与 "/etc/fstab" 对下,可能导致系统启动不了.
 ```
 
-## `Reboot`
+# `17. Reboot`
 
 ```
 # exit
@@ -171,8 +167,7 @@ vi /etc/hosts
 # reboot
 ```
 
-# `3. config system`
-## `i3`
+# `18. i3`
 
 ```
 $ sudo pacman -S xf86-input-vmmouse xf86-video-vmware mesa
@@ -186,25 +181,8 @@ $ sudo chsh -s /bin/zsh
 exec i3
 重启后startx进入图形界面
 ```
-```
-$ vim ~/.config/i3/config
 
-new_window pixel 2
-bindsym $mod+t border normal
-bindsym $mod+y border pixel 1
-bindsym $mod+u border none
-
-#===============窗口间距===============
-gaps inner 6
-gaps outer 0
-smart_gaps on
-
-#===============开启i3时自启动项===============
-#copy and paste between host and vmware archlinux
-exec /usr/bin/vmware-user
-```
-
-## `fonts`
+# `19. fonts`
 
 ```
 $ sudo pacman -S wqy-zenhei ttf-fireflysung
@@ -213,18 +191,7 @@ $ sudo cp ~/Download/xxx.ttf /usr/share/fonts
 $ sudo chmod 444  /usr/share/fonts/xxx.ttf
 ```
 
-## `zsh config`
-
-```
-$ git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-$ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-
-$ vim ~/.zshrc
-ZSH_THEME="candy" ==> ZSH_THEME="amuse"
-source ~/.zshrc
-```
-
-## `vm-tools`
+# `20. vm-tools`
 ```
 点击虚拟机的安装wm-tools
 
@@ -242,6 +209,7 @@ $ sudo pacman -S asp
 $ asp checkout open-vm-tools
 $ cd open-vm-tools/repos/community-x86_64/
 $ makepkg -s --asdeps
+
 # cp vm* /usr/lib/systemd/system
 # systemctl enable vmware-vmblock-fuse.service
 # systemctl enable vmtoolsd.service
@@ -250,3 +218,42 @@ $ makepkg -s --asdeps
 
 # /etc/init.d/rc6.d/K99vmware-tools start
 ```
+
+# `code dump`
+
+```
+examine limit of core dump:
+
+$ ulimit -c -H
+unlimited
+$ ulimit -c -S
+unlimited
+
+$ su
+# ulimit -c -S
+0
+# ulimit -c -H
+unlimited
+
+```
+
+```
+alter limit of core dump:
+
+# echo "* soft core unlimited" > /etc/security/limits.conf
+# echo "* hard core unlimited" >> /etc/security/limits.conf
+# echo "root soft core unlimited" >> /etc/security/limits.conf
+# echo "root hard core unlimited" >> /etc/security/limits.conf
+```
+
+```
+set placement of core dump:
+
+# echo "/tmp/core-%e-%t-%p-%s" > /proc/sys/kernel/core_pattern
+
+%e: programe name
+%t: time, seconds
+%p: pid
+%s: signal who cause the coredump
+```
+
