@@ -253,6 +253,61 @@ QObject::QObject(QObject *parent)
 ###### `Q_INVOKABLE`
 ###### `Q_NAMESPACE`
 ###### `Q_OBJECT`
+
+```
+#define Q_OBJECT \
+public: \
+    QT_WARNING_PUSH \
+    Q_OBJECT_NO_OVERRIDE_WARNING \
+    static const QMetaObject staticMetaObject; \
+    virtual const QMetaObject *metaObject() const; \
+    virtual void *qt_metacast(const char *); \
+    virtual int qt_metacall(QMetaObject::Call, int, void **); \
+    QT_TR_FUNCTIONS \
+private: \
+    Q_OBJECT_NO_ATTRIBUTES_WARNING \
+    Q_DECL_HIDDEN_STATIC_METACALL static void qt_static_metacall(QObject *, QMetaObject::Call, int, void **); \
+    QT_WARNING_POP \
+    struct QPrivateSignal {}; \
+    QT_ANNOTATE_CLASS(qt_qobject, "")
+```
+
+```
+#define QT_WARNING_PUSH                       __pragma(warning(push))
+
+#define Q_OBJECT_NO_OVERRIDE_WARNING
+
+#  define QT_TR_FUNCTIONS \
+    static inline QString tr(const char *s, const char *c = nullptr, int n = -1) { return staticMetaObject.tr(s, c, n); } \
+    static inline QString trUtf8(const char *s, const char *c = nullptr, int n = -1) { return staticMetaObject.tr(s, c, n); }
+    
+#define Q_OBJECT_NO_ATTRIBUTES_WARNING
+
+#define Q_DECL_HIDDEN_STATIC_METACALL Q_DECL_HIDDEN
+#define Q_DECL_HIDDEN
+
+#define QT_WARNING_POP                        __pragma(warning(pop))
+
+#define QT_ANNOTATE_CLASS(type, ...)
+```
+
+```
+public:
+    __pragma(warning(push))
+    static const QMetaObject staticMetaObject;
+    virtual const QMetaObject *metaObject() const;
+    virtual void *qt_metacast(const char *);
+    virtual int qt_metacall(QMetaObject::Call, int, void **);
+    static inline QString tr(const char *s, const char *c = nullptr, int n = -1) { return staticMetaObject.tr(s, c, n); } 
+    static inline QString trUtf8(const char *s, const char *c = nullptr, int n = -1) { return staticMetaObject.tr(s, c, n); }
+private:  
+    static void qt_static_metacall(QObject *, QMetaObject::Call, int, void **);
+    __pragma(warning(pop))
+    struct QPrivateSignal {};
+```
+
+
+
 ###### `Q_PROPERTY( ...)`
 ###### `Q_REVISION`
 ###### `Q_SET_OBJECT_NAME(Object)`
