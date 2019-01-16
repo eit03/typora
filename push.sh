@@ -5,4 +5,4 @@ chmod 777 keepEmptyDir.sh
 
 git add .
 git commit -am#
-git push git@github.com:eit90123/typora.git
+git push git@github.com:eit03/typora.git
