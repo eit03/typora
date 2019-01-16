@@ -29,7 +29,7 @@ ls /sys/firmware/efi/efivars
 ```
 pacman -Sy
 pacman -S reflector
-reflector --verbose -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist
+reflector --verbose -c China -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
 # `6. Partition the disks`
@@ -144,8 +144,8 @@ vi /etc/hosts
 # `15. Add user`
 
 ```
-# useradd -m -G wheel eit0
-# passwd eit0
+# useradd -m -G wheel eit
+# passwd eit
 
 // remember to open sudo privillige for wheel group in /etc/sudoers
 ```
@@ -177,8 +177,9 @@ $ sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc
 $ sudo pacman -S i3  {3..5}
 $ sudo chsh -s /bin/zsh
 
-在.xinitrc添加如下内容                                   
+在.xinitrc添加如下内容                                 
 exec i3
+注释其它冲突界面,dwm..
 重启后startx进入图形界面
 ```
 
@@ -216,7 +217,7 @@ $ makepkg -s --asdeps
 
 # reboot
 
-# /etc/init.d/rc6.d/K99vmware-tools start
+# /etc/init.d/rc6.d/K99vmware-tools start   ==> 每次开机运行,就可以主虚机间复制
 ```
 
 # `code dump`
