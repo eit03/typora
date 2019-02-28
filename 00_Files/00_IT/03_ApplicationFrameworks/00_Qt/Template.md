@@ -1,40 +1,39 @@
 ***
-`Version:` 5.11.1
+`Version:` Qt 5.12.1, QtCreate 4.8.1
 `Declaration:`
 `Defination:`
 `Reference:`
-`Keyword:` \[\]
-
+`Keyword:`
 ***
 [TOC]
 ***
 
 
+
 # `Brief Introduction`
+
+
+
 # `Detailed Description`
 
+
+
 # `Data Struct`
-
 ## `Type Declaration`
-
 ```
-class Q_CORE_EXPORT 
+class Q_CORE_EXPORT QString
 {
-//Prepare *** *** *** *** *** *** *** *** *** *** *** ***
-
-//Properties *** *** *** *** *** *** *** *** *** *** *** ***
-
-//Constructor *** *** *** *** *** *** *** *** *** *** *** ***
-
-//Functions *** *** *** *** *** *** *** *** *** *** *** ***
+///> 0. Prepare
+///> 1. Properties
+///> 2. Constructor
+///> 3. Functions
 }
 ```
-
-## `Construtor`
+## `Constructor`
 ```
 
 ```
-## `Memeory Model`
+## `Memory Model`
 ```
 
 ```
@@ -45,7 +44,6 @@ class Q_CORE_EXPORT
 # `Public Functions`
 # `Reimplemented Public Functions`
 # `Public Slots`
-
 # `Static Public Members`
 
 # `Protected Types`

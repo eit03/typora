@@ -1,3 +1,4 @@
+# `org`
 ```
 /* qmake ignore Q_OBJECT */
 #define Q_OBJECT \
@@ -29,3 +30,26 @@ private:
 	struct QPrivateSignal {};
 ```
 
+# `preprocess`
+```
+public:
+    static const QMetaObject staticMetaObject;
+    virtual const QMetaObject *metaObject() const;
+    virtual void *qt_metacast(const char *);
+    virtual int qt_metacall(QMetaObject::Call, int, void **);
+    static inline QString tr(const char *s,
+                             const char *c = nullptr,
+                             int n = -1)
+    { return staticMetaObject.tr(s, c, n); }
+    QT_DEPRECATED static inline QString trUtf8(const char *s,
+                                               const char *c = nullptr,
+                                               int n = -1)
+    { return staticMetaObject.tr(s, c, n); }
+    
+private:
+    Q_DECL_HIDDEN_STATIC_METACALL 
+    static void qt_static_metacall(QObject *, 
+                                   QMetaObject::Call,
+                                   int, void **);
+    struct QPrivateSignal {};
+```

@@ -3,12 +3,21 @@
 `Declaration:`
 `Defination:`
 `Reference:`
-`Keyword:`
+`Keyword:` \[\]
 ***
 [TOC]
 ***
+
+
+
 # `Brief Introduction`
+
+
+
 # `Detailed Description`
+
+
+
 # `Data Struct`
 ## `Type Declaration`
 ```
@@ -16,7 +25,7 @@ class Q_CORE_EXPORT QString
 {
 ///> 0. Prepare
 ///> 1. Properties
-///> 2. Constructor
+///> 2. Constructors
 ///> 3. Functions
 }
 ```
@@ -28,6 +37,9 @@ class Q_CORE_EXPORT QString
 ```
 
 ```
+
+
+
 # `Properties`
 ###### `objectName : QString`
 `Interpretation:`
@@ -36,6 +48,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Public Functions`
 ###### `QObject(QObject* parent = nullptr)`
 `Interpretation:`
@@ -275,6 +290,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Public Slots`
 ###### `void deleteLater()`
 `Interpretation:`
@@ -283,6 +301,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Static Public Members`
 ###### `QMetaObject::Connection connect(const QObject* sender, const char* signal, const QObject* receiver, const char* method, Qt::ConnectionType type = Qt::AutoConnection)`
 `Interpretation:`
@@ -361,6 +382,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Protected Functions`
 ###### `virtual void childEvent(QChildEvent* event)`
 `Interpretation:`
@@ -453,6 +477,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Signals`
 ###### `void destroyed(QObject* obj = nullptr)`
 `Interpretation:`
@@ -468,6 +495,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Related Non-Members`
 ###### `typedef QObjectList`
 `Interpretation:`
@@ -497,6 +527,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Macros`
 ###### `QT_NO_NARROWING_CONVERSIONS_IN_CONNECT`
 ###### `Q_CLASSINFO(Name, Value)`
@@ -518,3 +551,5 @@ class Q_CORE_EXPORT QString
 ###### `Q_SIGNALS`
 ###### `Q_SLOT`
 ###### `Q_SLOTS`
+
+

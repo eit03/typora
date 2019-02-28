@@ -12,22 +12,72 @@
 # `Data Struct`
 ## `Type Declaration`
 ```
-class Q_CORE_EXPORT QString
+class Q_CORE_EXPORT QObject
 {
 ///> 0. Prepare
 ///> 1. Properties
-///> 2. Constructor
+public:
+    // form Q_OBJECT macro.
+    static const QMetaObject staticMetaObject;
+protected:
+    // type is QObjectPrivate.
+    QScopedPointer<QObjectData> d_ptr;
+    static const QMetaObject staticQtMetaObject;
+    
+///> 2. Constructors
+public:
+    Q_INVOKABLE explicit QObject(QObject *parent=nullptr);
+    virtual ~QObject();
+protected:
+    QScopedPointer<QObjectData> d_ptr;
+private:
+    Q_DISABLE_COPY(QObject)
+    
 ///> 3. Functions
 }
 ```
 ## `Constructor`
 ```
-
+QObject::QObject(QObject *parent)
+    : d_ptr(new QObjectPrivate)
+{
+    Q_D(QObject);
+    d_ptr->q_ptr = this;
+    d->threadData = (parent && !parent->thread()) ?
+    	parent->d_func()->threadData : 
+    	QThreadData::current();
+    d->threadData->ref();
+    if (parent) {
+        QT_TRY {
+            if (!check_parent_thread(parent, 
+                parent ? parent->d_func()->threadData : 0, 
+                d->threadData))
+                parent = 0;
+            setParent(parent);
+        } QT_CATCH(...) {
+            d->threadData->deref();
+            QT_RETHROW;
+        }
+    }
+#if QT_VERSION < 0x60000
+    qt_addObject(this);
+#endif
+    if (Q_UNLIKELY(qtHookData[QHooks::AddQObject]))
+        reinterpret_cast<QHooks::AddQObjectCallback>			
+            (qtHookData[QHooks::AddQObject])(this);
+    Q_TRACE(QObject_ctor, this);
+}
 ```
 ## `Memory Model`
 ```
-
+__vfptr
+d_ptr               protected  QScopedPointer<QObjectData>(QObjectPrivate)
+staticMetaObject    public     static const QMetaObject
+staticQtMetaObject  protected  static const QMetaObject
 ```
+
+
+
 # `Properties`
 ###### `objectName : QString`
 `Interpretation:`
@@ -36,6 +86,27 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+```
+QString QObject::objectName() const
+{
+    Q_D(const QObject);
+    return d->extraData ? d->extraData->objectName : QString();
+}
+
+void QObject::setObjectName(const QString &name)
+{
+    Q_D(QObject);
+    if (!d->extraData)
+        d->extraData = new QObjectPrivate::ExtraData;
+
+    if (d->extraData->objectName != name) {
+        d->extraData->objectName = name;
+        emit objectNameChanged(d->extraData->objectName, QPrivateSignal());
+    }
+}
+```
+
 # `Public Functions`
 ###### `QObject(QObject* parent = nullptr)`
 `Interpretation:`
@@ -44,6 +115,7 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
 ###### `virtual ~QObject()`
 `Interpretation:`
 `StorePosition:`
@@ -275,6 +347,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Public Slots`
 ###### `void deleteLater()`
 `Interpretation:`
@@ -283,6 +358,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Static Public Members`
 ###### `QMetaObject::Connection connect(const QObject* sender, const char* signal, const QObject* receiver, const char* method, Qt::ConnectionType type = Qt::AutoConnection)`
 `Interpretation:`
@@ -361,6 +439,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Protected Functions`
 ###### `virtual void childEvent(QChildEvent* event)`
 `Interpretation:`
@@ -453,6 +534,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Signals`
 ###### `void destroyed(QObject* obj = nullptr)`
 `Interpretation:`
@@ -468,6 +552,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Related Non-Members`
 ###### `typedef QObjectList`
 `Interpretation:`
@@ -497,6 +584,9 @@ class Q_CORE_EXPORT QString
 `Access:`
 `Remark:`
 `Eg 0:`
+
+
+
 # `Macros`
 ###### `QT_NO_NARROWING_CONVERSIONS_IN_CONNECT`
 ###### `Q_CLASSINFO(Name, Value)`
@@ -518,3 +608,5 @@ class Q_CORE_EXPORT QString
 ###### `Q_SIGNALS`
 ###### `Q_SLOT`
 ###### `Q_SLOTS`
+
+
