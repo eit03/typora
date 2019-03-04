@@ -585,8 +585,6 @@ void QObject::setObjectName(const QString &name)
 `Remark:`
 `Eg 0:`
 
-
-
 # `Macros`
 ###### `QT_NO_NARROWING_CONVERSIONS_IN_CONNECT`
 ###### `Q_CLASSINFO(Name, Value)`
