@@ -17,9 +17,8 @@
   "editor.renderControlCharacters": true,
   "editor.showFoldingControls": "always",
   "files.trimFinalNewlines": true,
-  "files.trimTrailingWhitespace": true,
   "workbench.activityBar.visible": false,
   "C_Cpp.intelliSenseEngineFallback": "Disabled",
-  "editor.rulers": [ 80, 100 ]
+  "editor.rulers": [ 80, 82 ]
 }
 ```

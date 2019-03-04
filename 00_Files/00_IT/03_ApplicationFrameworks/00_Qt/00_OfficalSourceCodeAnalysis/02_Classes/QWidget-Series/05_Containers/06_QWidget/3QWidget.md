@@ -4,7 +4,6 @@
 `Defination:`
 `Reference:`
 `Keyword:`
-
 ***
 [TOC]
 ***
@@ -23,28 +22,69 @@ public:
         IgnoreMask = 0x4
     };
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
-    
+
 ///> 1. Properties
+private:
+    QWidgetData *data;
+
 ///> 2. Constructor
+public:
+    explicit QWidget(QWidget* parent = nullptr, Qt::WindowFlags f =
+        Qt::WindowFlags());
+    ~QWidget();
+protected:
+    QWidget(QWidgetPrivate &d, QWidget* parent, Qt::WindowFlags f);
+private:
+    Q_DISABLE_COPY(QWidget)
+
 ///> 3. Functions
 }
 ```
 ## `Constructor`
 ```
-
+QWidget::QWidget(QWidget *parent, Qt::WindowFlags f)
+    : QObject(*new QWidgetPrivate, 0), QPaintDevice()
+{
+    QT_TRY {
+        d_func()->init(parent, f);
+    } QT_CATCH(...) {
+        QWidgetExceptionCleaner::cleanup(this, d_func());
+        QT_RETHROW;
+    }
+}
+```
+```
+QWidget::QWidget(QWidgetPrivate &dd, QWidget* parent, Qt::WindowFlags f)
+    : QObject(dd, 0), QPaintDevice()
+{
+    Q_D(QWidget);
+    QT_TRY {
+        d->init(parent, f);
+    } QT_CATCH(...) {
+        QWidgetExceptionCleaner::cleanup(this, d_func());
+        QT_RETHROW;
+    }
+}
 ```
 ## `Memory Model`
 ```
-
+[QObject]
+[QPaintDevice]
+QWidgetData* data
 ```
 # `Properties`
 ###### `acceptDrops : bool`
-`Interpretation:`
-`StorePosition:`
-`Defualt:`
-`Access:`
-`Remark:`
-`Eg 0:`
+`Interpretation:`  
+This property holds whether drop events are enabled for this widget.  
+Setting this property to true announces to the system that  
+this widget may be able to accept drop events.  
+`StorePosition:`  
+`Defualt:`  
+`Access:`  
+bool acceptDrops() const;
+void setAcceptDrops(bool on);
+`Remark:`  
+`Eg 0:`  
 ###### `accessibleDescription : QString`
 `Interpretation:`
 `StorePosition:`
