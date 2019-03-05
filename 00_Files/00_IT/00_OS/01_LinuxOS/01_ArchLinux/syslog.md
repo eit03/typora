@@ -101,4 +101,3 @@ journalctl -g <keyword>
 // filter whith grep
 journalctl | grep <keyword>
 ```
-

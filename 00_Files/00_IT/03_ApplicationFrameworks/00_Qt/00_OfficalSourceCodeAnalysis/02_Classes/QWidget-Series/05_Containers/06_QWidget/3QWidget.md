@@ -74,50 +74,178 @@ QWidgetData* data
 ```
 # `Properties`
 ###### `acceptDrops : bool`
-`Interpretation:`  
-This property holds whether drop events are enabled for this widget.  
-Setting this property to true announces to the system that  
-this widget may be able to accept drop events.  
-`StorePosition:`  
-`Defualt:`  
-`Access:`  
-bool acceptDrops() const;
-void setAcceptDrops(bool on);
-`Remark:`  
-`Eg 0:`  
-###### `accessibleDescription : QString`
 `Interpretation:`
+This property holds whether drop events are enabled for this widget.
+Setting this property to true announces to the system that
+this widget may be able to accept drop events.
 `StorePosition:`
+d->high_attributes : ?;
 `Defualt:`
 `Access:`
+bool acceptDrops() const;
+void setAcceptDrops(bool on);
+```
+QWidget wgt;
+wgt.acceptDrops();
+wgt.setAcceptDrops(true);
+wgt.show();
+
+bool QWidget::acceptDrops() const { return testAttribute(Qt::WA_AcceptDrops); }
+
+inline bool QWidget::testAttribute(Qt::WidgetAttribute attribute) const
+{
+    if (attribute < int(8*sizeof(uint)))
+        return data->widget_attributes & (1<<attribute);
+    return testAttribute_helper(attribute);
+}
+
+bool QWidget::testAttribute_helper(Qt::WidgetAttribute attribute) const
+{
+    Q_D(const QWidget);
+    const int x = attribute - 8*sizeof(uint);
+    const int int_off = x / (8*sizeof(uint));
+    return (d->high_attributes[int_off] & (1<<(x-(int_off*8*sizeof(uint)))));
+}
+```
 `Remark:`
+`Eg 0:`
+###### `accessibleDescription : QString`
+
+`Interpretation:`
+
+This property holds the widget's description as seen by assistive technologies;
+
+The accessible description of a widget should convey what a widget does.
+ While the accessibleName should be a short and consise string (e.g. Save),
+the description should give more context, such as Saves the current document.
+
+`StorePosition:`
+
+d->accessibleDescription;
+
+`Defualt:`
+
+`Access:`
+
+QString accessibleDescription() const;
+void setAccessibleDescription(const QString &description);
+
+`Remark:`
+
 `Eg 0:`
 ###### `accessibleName : QString`
 `Interpretation:`
+
+see previours property.
+see Qt documentation.
+
 `StorePosition:`
+
+d->accessibleName;
+
 `Defualt:`
+
 `Access:`
+
+QString accessibleName() const;
+void setAccessibleName(const QString &name);
+
 `Remark:`
 `Eg 0:`
 ###### `autoFillBackground : bool`
+
 `Interpretation:`
+
+This property holds whether the widget background is filled automatically;
+
+If enabled, this property will cause Qt to fill the background of the widget
+before invoking the paint event. The color used is defined by the
+QPalette::Window color role from the widget's palette.
+
+In addition, Windows are always filled with QPalette::Window, unless the
+WA_OpaquePaintEvent or WA_NoSystemBackground attributes are set.
+
 `StorePosition:`
+
+d->extra->autoFillBackground;
+
 `Defualt:`
+
+By default, this property is false.
+
 `Access:`
+
+bool autoFillBackground() const;
+void setAutoFillBackground(bool enabled);
+
 `Remark:`
+
+This property cannot be turned off (i.e., set to false) if a widget's parent
+has a static gradient for its background.
+
+Use this property with caution in conjunction with Qt Style Sheets. When a
+widget has a style sheet with a valid background or a border-image,
+this property is automatically disabled.
+
 `Eg 0:`
 ###### `baseSize : QSize`
 `Interpretation:`
+
+This property holds the base size of the widget;
+
+The base size is used to calculate a proper widget size
+if the widget defines sizeIncrement().
+
 `StorePosition:`
+
+d->extra->topextra->basew;
+d->extra->topextra->baseh;
+
 `Defualt:`
+
+By default, for a newly-created widget, this property contains a size with zero
+width and height.
+
 `Access:`
+
+QSize baseSize() const;
+void setBaseSize(const QSize &);
+void setBaseSize(int basew, int baseh);
+
 `Remark:`
 `Eg 0:`
 ###### `childrenRect : const QRect`
 `Interpretation:`
+
+This property holds the bounding rectangle of the widget's children;
+
+Hidden children are excluded;
+
 `StorePosition:`
+
+```
+QRect QWidget::childrenRect() const
+{
+    Q_D(const QWidget);
+    QRect r(0, 0, 0, 0);
+    for (int i = 0; i < d->children.size(); ++i) {
+        QWidget *w = qobject_cast<QWidget *>(d->children.at(i));
+        if (w && !w->isWindow() && !w->isHidden())
+            r |= w->geometry();
+    }
+    return r;
+}
+```
+
 `Defualt:`
+
+By default, for a widget with no children, this property contains a rectangle
+with zero width and height located at the origin.
+
 `Access:`
+
+QRect childrenRect() const;
+
 `Remark:`
 `Eg 0:`
 ###### `childrenRegion : const QRegion`

@@ -18,8 +18,6 @@
     "workbench.activityBar.visible": false,
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "editor.wordWrap": "off",
-    "editor.rulers": [
-      80,
-      82
-    ]
+    "editor.rulers": [ 80, 82 ],
+    "files.trimTrailingWhitespace": true
   }
