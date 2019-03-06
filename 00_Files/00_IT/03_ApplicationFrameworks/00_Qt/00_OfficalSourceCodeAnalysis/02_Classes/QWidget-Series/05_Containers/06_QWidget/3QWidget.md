@@ -75,15 +75,22 @@ QWidgetData* data
 # `Properties`
 ###### `acceptDrops : bool`
 `Interpretation:`
+
 This property holds whether drop events are enabled for this widget.
 Setting this property to true announces to the system that
 this widget may be able to accept drop events.
+
 `StorePosition:`
+
 d->high_attributes : ?;
+
 `Defualt:`
+
 `Access:`
+
 bool acceptDrops() const;
 void setAcceptDrops(bool on);
+
 ```
 QWidget wgt;
 wgt.acceptDrops();
@@ -107,6 +114,7 @@ bool QWidget::testAttribute_helper(Qt::WidgetAttribute attribute) const
     return (d->high_attributes[int_off] & (1<<(x-(int_off*8*sizeof(uint)))));
 }
 ```
+
 `Remark:`
 `Eg 0:`
 ###### `accessibleDescription : QString`
@@ -250,52 +258,290 @@ QRect childrenRect() const;
 `Eg 0:`
 ###### `childrenRegion : const QRegion`
 `Interpretation:`
+
+This property holds the combined region occupied by the widget's children
+Hidden children are excluded.
+
 `StorePosition:`
+```
+QRegion QWidget::childrenRegion() const
+{
+    Q_D(const QWidget);
+    QRegion r;
+    for (int i = 0; i < d->children.size(); ++i) {
+        QWidget *w = qobject_cast<QWidget *>(d->children.at(i));
+        if (w && !w->isWindow() && !w->isHidden()) {
+            QRegion mask = w->mask();
+            if (mask.isEmpty())
+                r |= w->geometry();
+            else
+                r |= mask.translated(w->pos());
+        }
+    }
+    return r;
+}
+```
+
 `Defualt:`
+
+By default, for a widget with no children, this property contains an empty region.
+
 `Access:`
+
+QRegion childrenRegion() const;
+
 `Remark:`
 `Eg 0:`
 ###### `contextMenuPolicy : Qt::ContextMenuPolicy`
 `Interpretation:`
+
+how the widget shows a context menu;
+
+The default value of this property is **Qt::DefaultContextMenu**, which means
+the contextMenuEvent() handler is called. Other values are **Qt::NoContextMenu**,
+**Qt::PreventContextMenu**, **Qt::ActionsContextMenu**, and **Qt::CustomContextMenu**.
+With **Qt::CustomContextMenu**, the signal customContextMenuRequested() is emitted.
+
 `StorePosition:`
+
+data->context_menu_policy;
+
+```
+Qt::ContextMenuPolicy QWidget::contextMenuPolicy() const
+{
+    return (Qt::ContextMenuPolicy)data->context_menu_policy;
+}
+```
 `Defualt:`
 `Access:`
+
+Qt::ContextMenuPolicy contextMenuPolicy() const;
+void setContextMenuPolicy(Qt::ContextMenuPolicy policy);
+
 `Remark:`
 `Eg 0:`
 ###### `cursor : QCursor`
 `Interpretation:`
+
+This property holds the cursor shape for this widget;
+
 `StorePosition:`
+
+d->extra->curs;
+
+```
+QCursor QWidget::cursor() const
+{
+    Q_D(const QWidget);
+    if (testAttribute(Qt::WA_SetCursor))
+        return (d->extra && d->extra->curs)
+            ? *d->extra->curs
+            : QCursor(Qt::ArrowCursor);
+    if (isWindow() || !parentWidget())
+        return QCursor(Qt::ArrowCursor);
+    return parentWidget()->cursor();
+}
+```
+
 `Defualt:`
+
+By default, this property contains a cursor with the **Qt::ArrowCursor** shape.
+
 `Access:`
+
+QCursor cursor() const;
+void setCursor(const QCursor &);
+void unsetCursor();
+
 `Remark:`
+
+If no cursor has been set, or after a call to unsetCursor(), the parent's cursor
+is used.
+
+Some underlying window implementations will reset the cursor if it leaves a
+widget even if the mouse is grabbed. If you want to have a cursor set for
+all widgets, even when outside the window, consider
+QApplication::setOverrideCursor().
+
+Some widgets display themselves differently when they are disabled. For example
+a button might draw its label grayed out. If your widget needs to know when it
+becomes enabled or disabled, you can use the changeEvent()
+with type QEvent::EnabledChange.
+
 `Eg 0:`
 ###### `enabled : bool`
 `Interpretation:`
+
+This property holds whether the widget is enabled;
+
+In general an enabled widget handles keyboard and mouse events; a disabled
+widget does not. An exception is made with QAbstractButton.
+
 `StorePosition:`
+
+data->widget_attributes;
+
+```
+inline bool QWidget::isEnabled() const
+{ return !testAttribute(Qt::WA_Disabled); }
+
+inline bool QWidget::testAttribute(Qt::WidgetAttribute attribute) const
+{
+    if (attribute < int(8*sizeof(uint)))
+        return data->widget_attributes & (1<<attribute);
+    return testAttribute_helper(attribute);
+}
+```
+
 `Defualt:`
+
+By default, this property is true.
+
 `Access:`
+
+bool isEnabled() const;
+void setEnabled(bool);
+
+
 `Remark:`
+
+Disabling a widget implicitly disables all its children. Enabling respectively
+enables all child widgets unless they have been explicitly disabled. It it not
+possible to explicitly enable a child widget which is not a window while its
+parent widget remains disabled.
+
 `Eg 0:`
+
 ###### `focus : const bool`
 `Interpretation:`
+
+This property holds whether this widget (or its focus proxy) has the keyboard
+input focus;
+
 `StorePosition:`
+
+d->extra->focus_proxy;
+
+```
+bool QWidget::hasFocus() const
+{
+    const QWidget* w = this;
+    while (w->d_func()->extra && w->d_func()->extra->focus_proxy)
+        w = w->d_func()->extra->focus_proxy;
+#if QT_CONFIG(graphicsview)
+    if (QWidget *window = w->window()) {
+        QWExtra *e = window->d_func()->extra;
+        if (e && e->proxyWidget && e->proxyWidget->hasFocus() && window->focusWidget() == w)
+            return true;
+    }
+#endif // QT_CONFIG(graphicsview)
+    return (QApplication::focusWidget() == w);
+}
+```
+
 `Defualt:`
+
+By default, this property is false;
+
 `Access:`
+
+bool hasFocus() const;
+
 `Remark:`
+
+Obtaining the value of this property for a widget is effectively equivalent to
+checking whether QApplication::focusWidget() refers to the widget.
+
 `Eg 0:`
 ###### `focusPolicy : Qt::FocusPolicy`
 `Interpretation:`
+
+This property holds the way the widget accepts keyboard focus;
+
+The policy is Qt::TabFocus if the widget accepts keyboard focus by tabbing,
+**Qt::ClickFocus** if the widget accepts focus by clicking, **Qt::StrongFocus**
+if it accepts both, and **Qt::NoFocus** if it does not accept focus at all.
+
 `StorePosition:`
+
+data->focus_policy;
+
+```
+Qt::FocusPolicy QWidget::focusPolicy() const
+{
+    return (Qt::FocusPolicy)data->focus_policy;
+}
+```
+
 `Defualt:`
 `Access:`
+
+Qt::FocusPolicy focusPolicy() const;
+void setFocusPolicy(Qt::FocusPolicy policy);
+
 `Remark:`
+
+You must enable keyboard focus for a widget if it processes keyboard events.
+This is normally done from the widget's constructor. For instance, the QLineEdit
+constructor calls setFocusPolicy(Qt::StrongFocus).
+
+If the widget has a focus proxy, then the focus policy will be propagated to it.
+
 `Eg 0:`
 ###### `font : QFont`
 `Interpretation:`
+
+This property holds the font currently set for the widget;
+
+This property describes the widget's requested font. The font is used by the
+widget's style when rendering standard components, and is available as a means
+to ensure that custom widgets can maintain consistency with the native
+platform's look and feel. It's common that different platforms, or different
+styles, define different fonts for an application.
+
+When you assign a new font to a widget, the properties from this font are
+combined with the widget's default font to form the widget's final font.
+You can call fontInfo() to get a copy of the widget's final font. The final
+font is also used to initialize QPainter's font.
+
+The default depends on the system environment. QApplication maintains a
+system/theme font which serves as a default for all widgets. There may also
+be special font defaults for certain types of widgets. You can also define
+default fonts for widgets yourself by passing a custom font and the name of a
+widget to QApplication::setFont(). Finally, the font is matched against Qt's
+font database to find the best match.
+
+QWidget propagates explicit font properties from parent to child. If you change
+a specific property on a font and assign that font to a widget, that property
+will propagate to all the widget's children, overriding any system defaults for
+that property. Note that fonts by default don't propagate to windows
+(see isWindow()) unless the Qt::WA_WindowPropagation attribute is enabled.
+
+QWidget's font propagation is similar to its palette propagation.
+
+The current style, which is used to render the content of all standard Qt
+widgets, is free to choose to use the widget font, or in some cases, to ignore
+it (partially, or completely). In particular, certain styles like GTK style,
+Mac style, and Windows Vista style, apply special modifications to the widget
+font to match the platform's native look and feel. Because of this, assigning
+properties to a widget's font is not guaranteed to change the appearance of the
+widget. Instead, you may choose to apply a styleSheet.
+
 `StorePosition:`
+
+data->fnt;
+
 `Defualt:`
 `Access:`
+
+const QFont& font() const;
+void setFont(const QFont &);
+
 `Remark:`
+
+If Qt Style Sheets are used on the same widget as setFont(), style sheets will
+take precedence if the settings conflict.
+
 `Eg 0:`
 ###### `frameGeometry : const QRect`
 `Interpretation:`

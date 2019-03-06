@@ -19,5 +19,7 @@
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "editor.wordWrap": "off",
     "editor.rulers": [ 80, 82 ],
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "markdown-preview-enhanced.enableExtendedTableSyntax": true,
+    "markdown-preview-enhanced.enableLinkify": false
   }
