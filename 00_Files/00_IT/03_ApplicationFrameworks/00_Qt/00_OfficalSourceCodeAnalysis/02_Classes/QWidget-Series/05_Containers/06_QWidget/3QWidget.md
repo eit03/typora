@@ -123,9 +123,9 @@ bool QWidget::testAttribute_helper(Qt::WidgetAttribute attribute) const
 
 This property holds the widget's description as seen by assistive technologies;
 
-The accessible description of a widget should convey what a widget does.
- While the accessibleName should be a short and consise string (e.g. Save),
-the description should give more context, such as Saves the current document.
+The accessible description of a widget should convey what a widget does. While
+the accessibleName should be a short and consise string (e.g. Save), the
+description should give more context, such as Saves the current document.
 
 `StorePosition:`
 
@@ -168,10 +168,10 @@ This property holds whether the widget background is filled automatically;
 
 If enabled, this property will cause Qt to fill the background of the widget
 before invoking the paint event. The color used is defined by the
-QPalette::Window color role from the widget's palette.
+**QPalette::Window** color role from the widget's palette.
 
-In addition, Windows are always filled with QPalette::Window, unless the
-WA_OpaquePaintEvent or WA_NoSystemBackground attributes are set.
+In addition, Windows are always filled with **QPalette::Window**, unless the
+**WA_OpaquePaintEvent** or **WA_NoSystemBackground** attributes are set.
 
 `StorePosition:`
 
@@ -453,7 +453,9 @@ Obtaining the value of this property for a widget is effectively equivalent to
 checking whether QApplication::focusWidget() refers to the widget.
 
 `Eg 0:`
+
 ###### `focusPolicy : Qt::FocusPolicy`
+
 `Interpretation:`
 
 This property holds the way the widget accepts keyboard focus;
@@ -488,7 +490,9 @@ constructor calls setFocusPolicy(Qt::StrongFocus).
 If the widget has a focus proxy, then the focus policy will be propagated to it.
 
 `Eg 0:`
+
 ###### `font : QFont`
+
 `Interpretation:`
 
 This property holds the font currently set for the widget;
