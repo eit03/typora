@@ -5,7 +5,6 @@
     "editor.fontSize": 16,
     "editor.fontFamily": "Fixedsys Excelsior 3.01",
     "editor.codeLens": false,
-    "editor.cursorStyle": "line-thin",
     "files.autoSave": "onFocusChange",
     "editor.hover.delay": 100,
     "editor.lineHeight": 18,
@@ -17,9 +16,11 @@
     "files.trimFinalNewlines": true,
     "workbench.activityBar.visible": false,
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
-    "editor.wordWrap": "off",
     "editor.rulers": [ 80, 82 ],
     "files.trimTrailingWhitespace": true,
     "markdown-preview-enhanced.enableExtendedTableSyntax": true,
-    "markdown-preview-enhanced.enableLinkify": false
+    "markdown-preview-enhanced.enableLinkify": false,
+    "html.format.wrapLineLength": 0,
+    "editor.cursorStyle": "line-thin",
+    "editor.wordWrapColumn": 8000
   }

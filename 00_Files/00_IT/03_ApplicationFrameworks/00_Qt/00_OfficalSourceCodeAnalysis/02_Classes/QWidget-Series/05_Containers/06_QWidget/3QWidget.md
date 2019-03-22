@@ -41,6 +41,7 @@ private:
 }
 ```
 ## `Constructor`
+
 ```
 QWidget::QWidget(QWidget *parent, Qt::WindowFlags f)
     : QObject(*new QWidgetPrivate, 0), QPaintDevice()
@@ -53,6 +54,7 @@ QWidget::QWidget(QWidget *parent, Qt::WindowFlags f)
     }
 }
 ```
+
 ```
 QWidget::QWidget(QWidgetPrivate &dd, QWidget* parent, Qt::WindowFlags f)
     : QObject(dd, 0), QPaintDevice()
@@ -66,12 +68,15 @@ QWidget::QWidget(QWidgetPrivate &dd, QWidget* parent, Qt::WindowFlags f)
     }
 }
 ```
+
 ## `Memory Model`
+
 ```
 [QObject]
 [QPaintDevice]
-QWidgetData* data
+data                    QWidgetData*
 ```
+
 # `Properties`
 ###### `acceptDrops : bool`
 `Interpretation:`
@@ -547,34 +552,142 @@ If Qt Style Sheets are used on the same widget as setFont(), style sheets will
 take precedence if the settings conflict.
 
 `Eg 0:`
+
 ###### `frameGeometry : const QRect`
 `Interpretation:`
+
+Geometry of the widget relative to its parent including any window frame.
+
 `StorePosition:`
+
+data->crect;
+
+```
+QRect QWidget::frameGeometry() const
+{
+    Q_D(const QWidget);
+    if (isWindow() && ! (windowType() == Qt::Popup)) {
+        QRect fs = d->frameStrut();
+        return QRect(data->crect.x() - fs.left(),
+                     data->crect.y() - fs.top(),
+                     data->crect.width() + fs.left() + fs.right(),
+                     data->crect.height() + fs.top() + fs.bottom());
+    }
+    return data->crect;
+}
+```
+
 `Defualt:`
+
+By default, this property contains a value that depends on the user's platform
+and screen geometry.
+
 `Access:`
+
+QRect frameGeometry() const;
+
 `Remark:`
 `Eg 0:`
+
 ###### `frameSize : const QSize`
 `Interpretation:`
+
+This property holds the size of the widget including any window frame;
+
 `StorePosition:`
+
+```
+QSize QWidget::frameSize() const
+{
+    Q_D(const QWidget);
+    if (isWindow() && !(windowType() == Qt::Popup)) {
+        QRect fs = d->frameStrut();
+        return QSize(data->crect.width() + fs.left() + fs.right(),
+                      data->crect.height() + fs.top() + fs.bottom());
+    }
+    return data->crect.size();
+}
+```
+
 `Defualt:`
+
+By default, this property contains a value that depends on the user's platform
+and screen geometry;
+
 `Access:`
+
+QSize frameSize() const;
+
 `Remark:`
 `Eg 0:`
+
 ###### `fullScreen : const bool`
 `Interpretation:`
+
+This property holds whether the widget is shown in full screen mode;
+
+A widget in full screen mode occupies the whole screen area and does not display
+window decorations, such as a title bar.
+
 `StorePosition:`
+
+```
+bool QWidget::isFullScreen() const
+{ return data->window_state & Qt::WindowFullScreen; }
+```
+
 `Defualt:`
+
+By default, this property is false.
+
 `Access:`
+
+bool isFullScreen() const;
+
 `Remark:`
 `Eg 0:`
+
 ###### `geometry : QRect`
 `Interpretation:`
+
+This property holds the geometry of the widget relative to its parent and
+excluding the window frame
+
 `StorePosition:`
+
+data->crect;
+
+```
+inline const QRect &QWidget::geometry() const
+{ return data->crect; }
+```
+
 `Defualt:`
+
+By default, this property contains a value that depends on the user's platform
+and screen geometry.
+
 `Access:`
+
+const QRect & geometry() const;
+void setGeometry(int x, int y, int w, int h);
+void setGeometry(const QRect &);
+
 `Remark:`
+
+When changing the geometry, the widget, if visible, receives a move event
+(moveEvent()) and/or a resize event (resizeEvent()) immediately. If the widget
+is not currently visible, it is guaranteed to receive appropriate events before
+it is shown.
+
+The size component is adjusted if it lies outside the range defined by
+minimumSize() and maximumSize().
+
+Warning: Calling setGeometry() inside resizeEvent() or moveEvent() can lead to
+infinite recursion.
+
 `Eg 0:`
+
 ###### `height : const int`
 `Interpretation:`
 `StorePosition:`
@@ -584,32 +697,109 @@ take precedence if the settings conflict.
 `Eg 0:`
 ###### `inputMethodHints : Qt::InputMethodHints`
 `Interpretation:`
+
+???
+
 `StorePosition:`
 `Defualt:`
+
+By default, this property contains a value that depends on the user's platform
+and screen geometry.
+
 `Access:`
+
+int height() const;
+
 `Remark:`
+
+Note: Do not use this function to find the height of a screen on a multiple
+screen desktop. Read this note for details.
+
 `Eg 0:`
+
 ###### `isActiveWindow : const bool`
 `Interpretation:`
+
+This property holds whether this widget's window is the active window;
+
+The active window is the window that contains the widget that has keyboard focus
+(The window may still have focus if it has no widgets or none of its widgets
+accepts keyboard focus).
+
+When popup windows are visible, this property is true for both the active window
+and for the popup.
+
 `StorePosition:`
 `Defualt:`
+
+By default, this property is false.
+
 `Access:`
+
+bool isActiveWindow() const;
+
 `Remark:`
 `Eg 0:`
+
 ###### `layoutDirection : Qt::LayoutDirection`
 `Interpretation:`
+
+This property holds the layout direction for this widget;
+
+| Constant                | Value | Description           |
+| ----------------------- | ----- | --------------------- |
+| Qt::LeftToRight         | 0     | Left-to-right layout. |
+| Qt::RightToLeft         | 1     | Right-to-left layout. |
+| Qt::LayoutDirectionAuto | 2     | Automatic layout.     |
+
 `StorePosition:`
+
+d->high_attributes[??];
+
 `Defualt:`
+
+By default, this property is set to Qt::LeftToRight.;
+
 `Access:`
+
+Qt::LayoutDirection layoutDirection() const;
+void setLayoutDirection(Qt::LayoutDirection direction);
+void unsetLayoutDirection();
+
 `Remark:`
+
+When the layout direction is set on a widget, it will propagate to the widget's
+children, but not to a child that is a window and not to a child for which
+setLayoutDirection() has been explicitly called. Also, child widgets added after
+setLayoutDirection() has been called for the parent do not inherit the parent's
+layout direction.
+
+This method no longer affects text layout direction since Qt 4.7.;
+
 `Eg 0:`
+
 ###### `locale : QLocale`
 `Interpretation:`
+
+This property holds the widget's locale
+
+As long as no special locale has been set, this is either the parent's locale or (if this widget is a top level widget), the default locale.
+
+If the widget displays dates or numbers, these should be formatted using the widget's locale.
+
+This property was introduced in Qt 4.3.
+
 `StorePosition:`
 `Defualt:`
 `Access:`
+
+QLocale locale() const;
+void setLocale(const QLocale &locale);
+void unsetLocale();
+
 `Remark:`
 `Eg 0:`
+
 ###### `maximized : const bool`
 `Interpretation:`
 `StorePosition:`
@@ -675,25 +865,63 @@ take precedence if the settings conflict.
 `Eg 0:`
 ###### `modal : const bool`
 `Interpretation:`
+
+This property holds whether the widget is a modal widget
+
+This property only makes sense for windows. A modal widget prevents widgets in all other windows from getting any input.
+
 `StorePosition:`
+
+data->window_modality;
+
+```
+inline bool QWidget::isModal() const
+{ return data->window_modality != Qt::NonModal; }
+```
+
 `Defualt:`
+
+By default, this property is false.
+
 `Access:`
+
+bool isModal() const;
+
 `Remark:`
 `Eg 0:`
 ###### `mouseTracking : bool`
 `Interpretation:`
+
+This property holds whether mouse tracking is enabled for the widget
+
+If mouse tracking is disabled (the default), the widget only receives mouse move events when at least one mouse button is pressed while the mouse is being moved.
+
+If mouse tracking is enabled, the widget receives mouse move events even if no buttons are pressed.
+
 `StorePosition:`
+
 `Defualt:`
+
+By default, mouse tracking is disabled;
+
 `Access:`
+
+bool hasMouseTracking() const;
+void setMouseTracking(bool enable);
+
 `Remark:`
 `Eg 0:`
+
 ###### `normalGeometry : const QRect`
 `Interpretation:`
+
+
 `StorePosition:`
 `Defualt:`
 `Access:`
 `Remark:`
 `Eg 0:`
+
 ###### `palette : QPalette`
 `Interpretation:`
 `StorePosition:`
@@ -815,11 +1043,31 @@ take precedence if the settings conflict.
 `Eg 0:`
 ###### `windowFlags : Qt::WindowFlags`
 `Interpretation:`
+
+Window flags are a combination of a type and zero or more hints to the window
+system.
+
+If the widget had type Qt::Widget or Qt::SubWindow and becomes a window
+(Qt::Window, Qt::Dialog, etc.), it is put at position (0, 0) on the desktop. If
+the widget is a window and becomes a Qt::Widget or Qt::SubWindow, it is put at
+position (0, 0) relative to its parent widget.
+
+
 `StorePosition:`
 `Defualt:`
 `Access:`
+
+Qt::WindowFlags windowFlags() const;
+void setWindowFlags(Qt::WindowFlags type);
+
 `Remark:`
+
+Note: This function calls setParent() when changing the flags for a window,
+causing the widget to be hidden. You must call show() to make the widget visible
+again.
+
 `Eg 0:`
+
 ###### `windowIcon : QIcon`
 `Interpretation:`
 `StorePosition:`
@@ -836,18 +1084,72 @@ take precedence if the settings conflict.
 `Eg 0:`
 ###### `windowModified : bool`
 `Interpretation:`
+
+This property holds whether the document shown in the window has unsaved changes;
+
+A modified window is a window whose content has changed but has not been saved
+to disk. This flag will have different effects varied by the platform. On macOS
+the close button will have a modified look; on other platforms, the window title
+will have an '*' (asterisk).
+
+The window title must contain a "[\*]" placeholder, which indicates where the
+'\*' should appear. Normally, it should appear right after the file name
+(e.g., "document1.txt[\*] - Text Editor"). If the window isn't modified, the
+placeholder is simply removed.
+
 `StorePosition:`
+
+d->high_attributes[???];
+
 `Defualt:`
 `Access:`
+
+bool isWindowModified() const;
+void setWindowModified(bool);
+
 `Remark:`
+
+ote that if a widget is set as modified, all its ancestors will also be set as
+modified. However, if you call setWindowModified(false) on a widget, this will
+not propagate to its parent because other children of the parent might have been
+modified.
+
 `Eg 0:`
+
 ###### `windowOpacity : double`
 `Interpretation:`
+
+This property holds the level of opacity for the window.
+
+The valid range of opacity is from 1.0 (completely opaque) to 0.0 (completely
+transparent).
+
 `StorePosition:`
 `Defualt:`
+
+By default the value of this property is 1.0.
+
 `Access:`
+
+qreal windowOpacity() const;
+void setWindowOpacity(qreal level);
+
 `Remark:`
+
+This feature is available on Embedded Linux, macOS, Windows, and X11 platforms
+that support the Composite extension.
+
+Note: On X11 you need to have a composite manager running, and the X11 specific
+_NET_WM_WINDOW_OPACITY atom needs to be supported by the window manager you are
+using.
+
+Warning: Changing this property from opaque to transparent might issue a paint
+event that needs to be processed before the window is displayed correctly. This
+affects mainly the use of QPixmap::grabWindow(). Also note that semi-transparent
+windows update and resize significantly slower than opaque windows.
+
 `Eg 0:`
+
 ###### `windowTitle : QString`
 `Interpretation:`
 `StorePosition:`
