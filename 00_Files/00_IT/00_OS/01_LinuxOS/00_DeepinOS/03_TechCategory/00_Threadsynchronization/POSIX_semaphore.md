@@ -75,16 +75,15 @@ On success, sem_open() returns the address of the new semaphore; this address is
 
 `ERRORS`
 ```
-EACCES 			The semaphore exists, but the caller does not have permission to open it.
-EEXIST			Both O_CREAT and O_EXCL were specified in oflag, but a semaphore with this name already exists.
-EINVAL 			value was greater than SEM_VALUE_MAX.
-EINVAL 			name consists of just "/", followed by no other characters.
-EMFILE 			The per-process limit on the number of open file descriptors has been reached.
-ENAMETOOLONG 	 name was too long.
-ENFILE 			The system-wide limit on the total number of open files has been reached.
-ENOENT 			The O_CREAT flag was not specified in oflag and no semaphore with this name exists; or, O_CREAT was specified, 
-					but name wasn't well formed.
-ENOMEM 			Insufficient memory.
+EACCES 	        The semaphore exists, but the caller does not have permission to open it.
+EEXIST          Both O_CREAT and O_EXCL were specified in oflag, but a semaphore with this name already exists.
+EINVAL          value was greater than SEM_VALUE_MAX.
+EINVAL          name consists of just "/", followed by no other characters.
+EMFILE          The per-process limit on the number of open file descriptors has been reached.
+ENAMETOOLONG    name was too long.
+ENFILE          The system-wide limit on the total number of open files has been reached.
+ENOENT          The O_CREAT flag was not specified in oflag and no semaphore with this name exists; or, O_CREAT was specified, but name wasn't well formed.
+ENOMEM          Insufficient memory.
 ```
 
 ### `sem_getvalue`
@@ -96,4 +95,3 @@ ENOMEM 			Insufficient memory.
 ### `sem_close`
 
 ### `sem_unlink`
-

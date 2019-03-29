@@ -1,4 +1,4 @@
-
+```
 /* Please visit the URL below for more information: */
 /*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
 /* ~/.mume/style.less */
@@ -90,7 +90,9 @@
     pre {
         margin: 0.3rem 0rem !important;
         border: 0px solid red !important;
-        padding: 0px 5px 5px 5px !important;
+        padding: 5px !important;
+
+        line-height: 1.1rem;
 
         background-color: #3a4055 !important;
         color: #ccc !important;
@@ -149,3 +151,4 @@
     // className structName
 
 }
+```
